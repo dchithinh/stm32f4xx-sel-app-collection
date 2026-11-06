@@ -207,7 +207,7 @@ Touch calibration (min/max, invert) is in `../lib/stm32f407_hat_bsp/port/lv_drv_
 4. **Bootloader + SD card:** copy `.pio/build/black_f407vg/stm32f407xx_pomodoro.bin` to **`/apps/`** on the microSD card and install from the [app selector](https://github.com/dchithinh/stm32f407-app-selector) UI.
 5. Build artifacts: `.pio/build/black_f407vg/stm32f407xx_pomodoro.elf`, `.bin`, `.hex`, `.map` (name set in `extra_pio.py` via `PROGNAME`).
 
-Debug UART (**115200** on USART2) prints a line confirming the app slot (`0x08010000`) on startup.
+Debug UART (**115200** on USART2) uses **[rxi/log.c](https://github.com/rxi/log.c)** from **`../lib/logger`**: after `debug_uart_init()`, `logger_init_uart()` sends **`log_info`** / **`log_…`** lines confirming the app slot (`0x08010000`) and init progress. Default level is INFO (`-D LOGGER_DEFAULT_LEVEL=LOG_DEBUG` in `build_flags` for more).
 
 ---
 

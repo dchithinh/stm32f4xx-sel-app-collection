@@ -1,0 +1,15 @@
+{
+  "name": "logger",
+  "version": "0.1.0",
+  "description": "rxi/log.c with STM32 UART callback helper (shared, not HAT-specific)",
+  "build": {
+    "includeDir": ".",
+    "srcDir": ".",
+    "srcFilter": [
+      "+<log.c>",
+      "+<logger_uart.c>"
+    ]
+  },
+  "frameworks": "stm32cube",
+  "platforms": "ststm32"
+}

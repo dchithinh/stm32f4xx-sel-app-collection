@@ -16,7 +16,6 @@
   ******************************************************************************
   */
 #include <string.h>
-#include <stdio.h>
 #include "main.h"
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_uart.h"
@@ -28,6 +27,8 @@
 #include "debug_utils.h"
 #include "clock_config.h"
 #include "debug_uart.h"
+#include "log.h"
+#include "logger_uart.h"
 
 /**
   * @brief  The application entry point.
@@ -44,13 +45,14 @@ int main(void)
   SystemClock_Config();
 
   debug_uart_init();
-  printf("\r\n[Pomodoro] app slot 0x08010000, SYSCLK=%lu Hz\r\n",
-         (unsigned long)HAL_RCC_GetSysClockFreq());
+  logger_init_uart();
+  log_info("Pomodoro app slot 0x08010000, SYSCLK=%lu Hz",
+           (unsigned long)HAL_RCC_GetSysClockFreq());
 
   lv_init();
-  printf("[Pomodoro] lv_init OK\r\n");
+  log_debug("lv_init OK");
   tft_init();
-  printf("[Pomodoro] tft_init OK\r\n");
+  log_debug("tft_init OK");
   touchpad_init();
   lv_port_log_init();
 
@@ -177,8 +179,7 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  log_error("assert_param: file %s line %lu", (const char *)file, (unsigned long)line);
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

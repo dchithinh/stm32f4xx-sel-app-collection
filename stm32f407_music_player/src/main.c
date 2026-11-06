@@ -9,7 +9,8 @@
 #include "audio_cs43l22.h"
 #include "player.h"
 #include "ui_player.h"
-#include <stdio.h>
+#include "log.h"
+#include "logger_uart.h"
 
 extern DMA_HandleTypeDef lcd_dma_handle;
 extern DMA_HandleTypeDef hdma_i2s3_tx;
@@ -109,32 +110,33 @@ int main(void)
     SystemClock_Config();
     ccmram_zero();
     debug_uart_init();
-    printf("\r\n=== music_player app ===\r\n");
-    printf("SYSCLK=%lu\r\n", (unsigned long)HAL_RCC_GetSysClockFreq());
+    logger_init_uart();
+    log_info("music_player app started");
+    log_info("SYSCLK=%lu Hz", (unsigned long)HAL_RCC_GetSysClockFreq());
 
     user_button_init();
 
-    printf("lvgl/lcd...\r\n");
+    log_debug("lv_init / tft_init...");
     lv_init();
     tft_init();
-    printf("lcd ok\r\n");
+    log_debug("LCD ready");
 
     /* PB9 is LCD CS and CS43L22 SDA — init codec after the display owns PB9. */
-    printf("codec...\r\n");
+    log_debug("audio codec init...");
     if (audio_codec_init() != 0) {
-        printf("codec init failed (jack may be silent)\r\n");
+        log_warn("codec init failed (jack may be silent)");
     } else {
-        printf("codec ok\r\n");
+        log_debug("codec ready");
     }
 
-    printf("sd/player...\r\n");
+    log_debug("SD / player init...");
     (void)player_init();
-    printf("status: %s\r\n", player_get_status_text());
+    log_info("player: %s", player_get_status_text());
 
     touchpad_init();
     ui_player_create();
     ui_player_refresh();
-    printf("ui ready\r\n");
+    log_info("UI ready");
     led_on(GPIO_PIN_13);
 
     while (1) {

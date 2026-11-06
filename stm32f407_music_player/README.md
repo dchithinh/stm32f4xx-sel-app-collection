@@ -40,13 +40,16 @@ Format **FAT32**. Place:
 ## Code layout (this collection)
 
 - **Shared HAT BSP** (LCD, touch, LVGL port): `../lib/stm32f407_hat_bsp`
+- **Shared logging** ([rxi/log.c](https://github.com/rxi/log.c)): `../lib/logger`
 - **microSD on SPI3** (product-specific): `lib/sdcard`
 
 When this app is its **own git repo**, add the common BSP as a **submodule** at `../lib/stm32f407_hat_bsp` (or change `lib_extra_dirs` / `-I` paths in `platformio.ini`).
 
-## Serial debug (`printf`)
+## Serial debug (logging)
 
-`printf` goes to **USART2** (PA2 TX) at **115200 8N1**, same as the **ST-Link virtual COM** on the Discovery. The shared BSP implements `debug_uart_init()` and `__io_putchar`; this app adds `src/syscalls.c` so Newlib routes `stdout` through `__io_putchar`. Use **PlatformIO Monitor** (`pio device monitor`) or any terminal on the ST-Link port.
+Console output uses **`[rxi/log.c](https://github.com/rxi/log.c)`** from **`../lib/logger`** (see collection README). After **`debug_uart_init()`**, the app calls **`logger_init_uart()`** so messages go to **USART2** (PA2 TX) at **115200 8N1** (ST-Link VCP), with levels such as **`log_info`** / **`log_debug`** / **`log_warn`**. `src/syscalls.c` still retargets `putchar` for anything that uses stdio.
+
+Use **PlatformIO Monitor** (`pio device monitor`) or any terminal on the ST-Link port. Default log level is **INFO**; override with e.g. `-D LOGGER_DEFAULT_LEVEL=LOG_DEBUG` in `build_flags`.
 
 ## Build
 
