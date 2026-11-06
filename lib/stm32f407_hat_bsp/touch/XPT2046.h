@@ -44,6 +44,9 @@ extern "C" {
  **********************/
 void xpt2046_init(void);
 void xpt2046_read(lv_indev_t * indev, lv_indev_data_t * data);
+void xpt2046_cs(uint8_t val);
+uint8_t xpt2046_xchg_value(uint8_t val);
+uint8_t xpt2046_irq_pin_read(void);
 
 /**********************
  *      MACROS

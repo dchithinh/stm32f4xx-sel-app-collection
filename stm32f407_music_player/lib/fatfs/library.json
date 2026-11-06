@@ -5,8 +5,8 @@
   "build": {
     "includeDir": ".",
     "flags": [
-      "-I $PROJECT_DIR/lib/bsp/sdcard",
-      "-I $PROJECT_DIR/lib/bsp"
+      "-I $PROJECT_DIR/lib/sdcard",
+      "-I $PROJECT_DIR/lib/stm32f407_hat_bsp/board"
     ]
   }
 }

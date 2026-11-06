@@ -37,6 +37,17 @@ Format **FAT32**. Place:
 /music/a.mp3               ← track to play
 ```
 
+## Code layout (this collection)
+
+- **Shared HAT BSP** (LCD, touch, LVGL port): `../lib/stm32f407_hat_bsp`
+- **microSD on SPI3** (product-specific): `lib/sdcard`
+
+When this app is its **own git repo**, add the common BSP as a **submodule** at `../lib/stm32f407_hat_bsp` (or change `lib_extra_dirs` / `-I` paths in `platformio.ini`).
+
+## Serial debug (`printf`)
+
+`printf` goes to **USART2** (PA2 TX) at **115200 8N1**, same as the **ST-Link virtual COM** on the Discovery. The shared BSP implements `debug_uart_init()` and `__io_putchar`; this app adds `src/syscalls.c` so Newlib routes `stdout` through `__io_putchar`. Use **PlatformIO Monitor** (`pio device monitor`) or any terminal on the ST-Link port.
+
 ## Build
 
 ```bash

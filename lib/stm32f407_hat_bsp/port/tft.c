@@ -7,13 +7,17 @@
  *      INCLUDES
  *********************/
 #include "lv_conf.h"
+#if defined(LV_LVGL_H_INCLUDE_SIMPLE) && LV_LVGL_H_INCLUDE_SIMPLE
+#include "lvgl.h"
+#else
 #include "lvgl/lvgl.h"
+#endif
 #include <string.h>
 
 #include "tft.h"
-#include "../lcd/lcd.h"
+#include "lcd/lcd.h"
 #include "stm32f4xx.h"
-#include "../lcd/config.h"  // For USE_DMA_FLUSH_LCD
+#include "lcd/config.h"
 
 
 extern lcd_handle_t lcd_handle;
@@ -80,10 +84,11 @@ void tft_init(void)
 
     display = lv_display_create(TFT_HOR_RES, TFT_VER_RES);
 
-    // buf_size is number of pixels
-    // 24KB buffers = 12,288 pixels = ~51 lines (vs 42 lines with 20KB)
-    // Trade-off: Reduced LV_MEM_SIZE from 48KB → 40KB for better rendering performance
-    uint32_t buf_size = (24UL * 1024UL) / 2;  // 2 bytes per pixel in RGB565
+    // buf_size is number of pixels (must match DB_SIZE in lcd.c via BSP_LCD_DRAW_BUF_KB)
+#ifndef BSP_LCD_DRAW_BUF_KB
+#define BSP_LCD_DRAW_BUF_KB 24
+#endif
+    uint32_t buf_size = ((uint32_t)BSP_LCD_DRAW_BUF_KB * 1024UL) / 2U;  /* RGB565 */
 
     lv_display_set_buffers(display, draw_buf1, draw_buf2, buf_size, LV_DISPLAY_RENDER_MODE_PARTIAL);
 

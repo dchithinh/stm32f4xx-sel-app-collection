@@ -27,44 +27,7 @@
 #include "main_screen.h"
 #include "debug_utils.h"
 #include "clock_config.h"
-
-UART_HandleTypeDef huart2;
-
-/**
-  * @brief  Initialize UART2 for debugging
-  * @note   Pin Configuration (configured in HAL_UART_MspInit):
-  *         - PA2: USART2_TX (Alternate Function AF7)
-  *         - PA3: USART2_RX (Alternate Function AF7)
-  *         - GPIO Mode: GPIO_MODE_AF_PP (Alternate Function Push-Pull)
-  *         - GPIO Pull: GPIO_PULLUP
-  *         - GPIO Speed: GPIO_SPEED_FREQ_VERY_HIGH
-  * @retval None
-  */
-static void UART2_Init(void)
-{
-    __HAL_RCC_USART2_CLK_ENABLE();
-    __HAL_RCC_USART2_FORCE_RESET();
-    __HAL_RCC_USART2_RELEASE_RESET();
-
-    huart2.Instance = USART2;
-    huart2.Init.BaudRate = 115200;      // 115200 bps for debug output
-    huart2.Init.WordLength = UART_WORDLENGTH_8B;  // 8 data bits
-    huart2.Init.StopBits = UART_STOPBITS_1;       // 1 stop bit
-    huart2.Init.Parity = UART_PARITY_NONE;        // No parity
-    huart2.Init.Mode = UART_MODE_TX_RX;           // TX and RX enabled
-    huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;  // No hardware flow control
-    if (HAL_UART_Init(&huart2) != HAL_OK)
-    {
-        Error_Handler();
-    }
-}
-
-int __io_putchar(int ch)
-{
-    uint8_t c = (uint8_t)ch;
-    HAL_UART_Transmit(&huart2, &c, 1, HAL_MAX_DELAY);
-    return ch;
-}
+#include "debug_uart.h"
 
 /**
   * @brief  The application entry point.
@@ -80,7 +43,7 @@ int main(void)
 
   SystemClock_Config();
 
-  UART2_Init();
+  debug_uart_init();
   printf("\r\n[Pomodoro] app slot 0x08010000, SYSCLK=%lu Hz\r\n",
          (unsigned long)HAL_RCC_GetSysClockFreq());
 

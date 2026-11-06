@@ -1,6 +1,10 @@
 /**
  * @file XPT2046.c
  *
+ * SPI3 touch controller for stm32f407_tft_2.4inch_hat.
+ *
+ * - Apps with microSD on SPI3 (music player): define BSP_HAS_SD_SPI_BUS=1 and link sd_spi.c / player.
+ * - SPI3-only touch (pomodoro): omit BSP_HAS_SD_SPI_BUS; this file initializes SPI3 here.
  */
 
 /*********************
@@ -17,6 +21,16 @@
 #include LV_DRV_INDEV_INCLUDE
 #include LV_DRV_DELAY_INCLUDE
 
+#if BSP_HAS_SD_SPI_BUS
+#include "sd_spi.h"
+#include "hat_board.h"
+#endif
+
+#if BSP_XPT2046_I2S_GATING
+#include "spi3_bus.h"
+#include "player.h"
+#endif
+
 /*********************
  *      DEFINES
  *********************/
@@ -30,12 +44,19 @@ static void xpt2046_corr(int16_t * x, int16_t * y);
 static void xpt2046_avg(int16_t * x, int16_t * y);
 static void xpt2046_avg_reset(void);
 static void xpt2046_gpio_init(void);
+#if !defined(BSP_HAS_SD_SPI_BUS) || BSP_HAS_SD_SPI_BUS == 0
 static void MX_SPI3_Init(void);
+void HAL_SPI_MspInit(SPI_HandleTypeDef * hspi);
+#endif
 
 /**********************
  *  STATIC VARIABLES
  **********************/
+#if defined(BSP_HAS_SD_SPI_BUS) && BSP_HAS_SD_SPI_BUS
+extern SPI_HandleTypeDef hspi3;
+#else
 static SPI_HandleTypeDef hspi3;
+#endif
 
 int16_t avg_buf_x[XPT2046_AVG];
 int16_t avg_buf_y[XPT2046_AVG];
@@ -54,10 +75,14 @@ uint8_t xpt2046_xchg_value(uint8_t val)
 
 void xpt2046_cs(uint8_t val)
 {
+#if defined(BSP_HAS_SD_SPI_BUS) && BSP_HAS_SD_SPI_BUS
+	HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_SET);
+#endif
 	HAL_GPIO_WritePin(XPT2046_CS_PORT, XPT2046_CS_PIN,
 	                  val ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
+#if !defined(BSP_HAS_SD_SPI_BUS) || BSP_HAS_SD_SPI_BUS == 0
 void HAL_SPI_MspInit(SPI_HandleTypeDef * hspi)
 {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
@@ -96,6 +121,7 @@ static void MX_SPI3_Init(void)
 		}
 	}
 }
+#endif /* !BSP_HAS_SD_SPI_BUS */
 
 static void xpt2046_gpio_init(void)
 {
@@ -123,7 +149,11 @@ static void xpt2046_gpio_init(void)
 void xpt2046_init(void)
 {
 	xpt2046_gpio_init();
+#if defined(BSP_HAS_SD_SPI_BUS) && BSP_HAS_SD_SPI_BUS
+	sd_spi_set_touch();
+#else
 	MX_SPI3_Init();
+#endif
 
 	LV_DRV_INDEV_SPI_CS(0);
 	LV_DRV_INDEV_SPI_XCHG_BYTE(0x80);
@@ -147,6 +177,19 @@ void xpt2046_read(lv_indev_t * indev, lv_indev_data_t * data)
 	static bool last_pressed = false;
 
 	bool pressed = (LV_DRV_INDEV_IRQ_READ == 0);
+
+#if defined(BSP_XPT2046_I2S_GATING) && BSP_XPT2046_I2S_GATING
+	if (spi3_bus_is_i2s() || player_spi_busy()) {
+		if (pressed) {
+			player_touch_while_i2s();
+		}
+		data->point.x = last_x;
+		data->point.y = last_y;
+		data->state = LV_INDEV_STATE_RELEASED;
+		last_pressed = false;
+		return;
+	}
+#endif
 
 	/* Drop averaged samples from the previous touch so a new tap is not pulled toward the old point. */
 	if (!pressed) {

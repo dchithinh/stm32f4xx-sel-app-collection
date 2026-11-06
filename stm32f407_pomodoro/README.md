@@ -157,7 +157,7 @@ See the [HAT signal table](https://github.com/dchithinh/pcb-lab/tree/main/stm32f
 
 **Not used for touch on this HAT:** Discovery SPI1 (PA5 / PA6 / PA7), PA8, or PA15 as in older wiring notes.
 
-Touch calibration (min/max, invert) is in `bsp/lvgl/lv_drv_conf.h` (`XPT2046_*`).
+Touch calibration (min/max, invert) is in `../lib/stm32f407_hat_bsp/port/lv_drv_conf.h` (`XPT2046_*`).
 
 ### Debug UART (USART2)
 | UART Pin | STM32F407 Pin | Function | Notes |
@@ -221,10 +221,11 @@ stm32f407xx_pomodoro/
 ├── 📁 Core/
 │   ├── 📁 Inc/
 │   └── 📁 Src/           # Application + STM32Cube-generated HAL user code
-├── 📁 bsp/               # Board Support Package (LCD, touch, LVGL port)
 ├── 📁 lvgl/              # LVGL sources
 ├── 📁 Doc/               # Photos, reference
 └── 📄 README.md
+
+../lib/stm32f407_hat_bsp/   # Shared BSP (LCD, touch, LVGL port) — see collection README
 ```
 
 ---
@@ -237,7 +238,7 @@ The project supports multiple clock configurations in `clock_config.h`:
 
 ### Display Configuration
 
-Display settings are configured in `bsp/lcd/config.h`:
+Display settings are configured in `../lib/stm32f407_hat_bsp/lcd/config.h`:
 - **Resolution:** 240x320
 - **Color depth:** 16-bit RGB565
 - **Orientation:** Portrait/Landscape
@@ -260,7 +261,7 @@ Debug features can be enabled/disabled in `debug_utils.h`:
 
 ### SPI Communication
 
-**LCD (SPI2)** — settings in `bsp/lcd/lcd.c`:
+**LCD (SPI2)** — settings in `../lib/stm32f407_hat_bsp/lcd/lcd.c`:
 
 - **Mode:** Full-duplex master
 - **Clock polarity:** Low (CPOL=0)
@@ -268,9 +269,9 @@ Debug features can be enabled/disabled in `debug_utils.h`:
 - **Data size:** 8-bit
 - **MSB first**
 
-**Touch (SPI3, XPT2046)** — settings in `bsp/lcd/tsc/XPT2046.c`:
+**Touch (SPI3, XPT2046)** — settings in `../lib/stm32f407_hat_bsp/touch/XPT2046.c`:
 
-- **Pins:** PC10 / PC11 / PC12 (AF6), CS **PE3**, IRQ **PE5** (see `bsp/lcd/hw_def.h`)
+- **Pins:** PC10 / PC11 / PC12 (AF6), CS **PE3**, IRQ **PE5** (see `../lib/stm32f407_hat_bsp/lcd/hw_def.h`)
 - **Mode:** Master, CPOL=0, CPHA=0, 8-bit, software CS on PE3
 - **Shared bus:** Same SPI3 lines as the HAT microSD socket; only touch CS (`LCD_T_CS`) is driven for the Pomodoro UI
 

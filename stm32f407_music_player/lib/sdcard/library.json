@@ -1,0 +1,17 @@
+{
+  "name": "sdcard",
+  "version": "1.0.0",
+  "description": "SPI3 microSD + CS mux (stm32f407_tft_2.4inch_hat)",
+  "build": {
+    "includeDir": ".",
+    "srcFilter": [
+      "+<sd_spi.c>"
+    ],
+    "flags": [
+      "-I $PROJECT_DIR/lib/sdcard",
+      "-I $PROJECT_DIR/lib/stm32f407_hat_bsp/board"
+    ]
+  },
+  "frameworks": "stm32cube",
+  "platforms": "ststm32"
+}

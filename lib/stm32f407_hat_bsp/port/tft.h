@@ -10,9 +10,14 @@
  *      INCLUDES
  *********************/
 #include <stdint.h>
+#if defined(LV_LVGL_H_INCLUDE_SIMPLE) && LV_LVGL_H_INCLUDE_SIMPLE
 #include "lvgl.h"
-#include "../lcd/lcd.h"
-#include "../lcd/config.h"  // For USE_DMA_FLUSH_LCD
+#else
+#include "lvgl/lvgl.h"
+#endif
+/* BSP root must be on the include path (see platformio.ini / library.json). */
+#include "lcd/lcd.h"
+#include "lcd/config.h"
 
 /*********************
  *      DEFINES

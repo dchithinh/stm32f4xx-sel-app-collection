@@ -38,7 +38,7 @@
  * - Enables smoother UI and better touch responsiveness
  * 
  * To disable DMA (for debugging):
- * Set USE_DMA_FLUSH_LCD to 0 in bsp/lcd/config.h
+ * Set USE_DMA_FLUSH_LCD to 0 in lcd/config.h (this package)
 */
 
 
@@ -50,7 +50,11 @@
 #include "lcd.h"
 #include "hw_def.h"
 #include "ili9341_reg.h"
-#include "lvgl/lvgl.h"  // For LV_LOG_* macros
+#if defined(LV_LVGL_H_INCLUDE_SIMPLE) && LV_LVGL_H_INCLUDE_SIMPLE
+#include "lvgl.h"  // LV_LOG_* macros
+#else
+#include "lvgl/lvgl.h"
+#endif
 
 #if USE_DMA_FLUSH_LCD
 #include "tft.h"  // For tft_dma_transfer_complete() callback
@@ -92,9 +96,11 @@ lcd_handle_t *hlcd = &lcd_handle;
 #define LCD_DCX_HIGH()  HAL_GPIO_WritePin(LCD_DCX_PORT, LCD_DCX_PIN, GPIO_PIN_SET)
 
 
-// Increased buffer to 24KB each (12,288 pixels = ~51 lines)
-// Trade-off: Reduced LV_MEM_SIZE from 48KB → 40KB to free 8KB RAM
-#define DB_SIZE 	(24UL * 1024UL)
+#ifndef BSP_LCD_DRAW_BUF_KB
+#define BSP_LCD_DRAW_BUF_KB 24
+#endif
+/* Per-buffer size for LVGL partial flush (KiB each of db/wb) */
+#define DB_SIZE 	((uint32_t)BSP_LCD_DRAW_BUF_KB * 1024UL)
 uint8_t db[DB_SIZE];
 uint8_t wb[DB_SIZE];
 
