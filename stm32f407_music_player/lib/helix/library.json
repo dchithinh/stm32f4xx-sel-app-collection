@@ -1,0 +1,13 @@
+{
+  "name": "helix-mp3",
+  "version": "1.0.0",
+  "description": "Helix fixed-point MP3 decoder",
+  "build": {
+    "includeDir": "pub",
+    "flags": [
+      "-I real",
+      "-I pub",
+      "-DARM"
+    ]
+  }
+}

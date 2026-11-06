@@ -1,0 +1,15 @@
+{
+  "name": "bsp",
+  "version": "1.0.0",
+  "description": "ILI9341 SPI LCD + LVGL display port (from pomodoro BSP)",
+  "build": {
+    "includeDir": ".",
+    "flags": [
+      "-I $PROJECT_DIR/lib/bsp/lcd",
+      "-I $PROJECT_DIR/lib/bsp/port",
+      "-I $PROJECT_DIR/lib/bsp/touch",
+      "-I $PROJECT_DIR/lib/bsp/sdcard",
+      "-I $PROJECT_DIR/lib/bsp"
+    ]
+  }
+}

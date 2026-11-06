@@ -1,0 +1,31 @@
+{
+    "files.associations": {
+        "stm32f4xx_hal_conf.h": "c",
+        "stm32f4xx_hal.h": "c",
+        "lcd.h": "c",
+        "hw_def.h": "c",
+        "stm32f407xx.h": "c",
+        "ili9341_reg.h": "c",
+        "stm32f4xx_hal_rcc.h": "c",
+        "stm32f4xx_hal_rcc_ex.h": "c",
+        "stdint.h": "c",
+        "stm32f4xx_hal_spi.h": "c",
+        "stm32f4xx_hal_gpio.h": "c",
+        "stm32f4xx_hal_dma.h": "c",
+        "config.h": "c",
+        "xstring": "c",
+        "stm32f4xx_hal_uart.h": "c",
+        "string.h": "c",
+        "lvgl.h": "c",
+        "lv_init.h": "c",
+        "lv_indev.h": "c",
+        "lv_display.h": "c",
+        "lv_log.h": "c",
+        "lv_conf_internal.h": "c",
+        "main_screen.h": "c",
+        "clock_config.h": "c",
+        "xmemory": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled",
+    "C_Cpp.intelliSenseEngine": "default"
+}

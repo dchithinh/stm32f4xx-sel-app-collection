@@ -1,0 +1,12 @@
+{
+  "name": "fatfs",
+  "version": "0.14.0",
+  "description": "ChaN FatFs + SPI SD diskio",
+  "build": {
+    "includeDir": ".",
+    "flags": [
+      "-I $PROJECT_DIR/lib/bsp/sdcard",
+      "-I $PROJECT_DIR/lib/bsp"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "lvgl",
+  "version": "9.4.0",
+  "description": "LVGL (bundled tree, matches lv_version.h)",
+  "build": {
+    "includeDir": ".",
+    "srcDir": "src"
+  },
+  "frameworks": "*",
+  "platforms": "*"
+}
