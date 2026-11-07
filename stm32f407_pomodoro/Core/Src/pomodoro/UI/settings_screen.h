@@ -4,8 +4,8 @@
 #include "lvgl.h"
 
 typedef enum {
-    POMO_DARK_THEME,
-    POMO_LIGHT_THEME
+        POMO_DARK_THEME,
+        POMO_LIGHT_THEME
 } pomodoro_theme_e;
 
 pomodoro_theme_e ui_get_theme(void);

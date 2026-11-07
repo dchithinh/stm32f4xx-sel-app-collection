@@ -1,9 +1,9 @@
 /**
- * Copyright (c) 2020 rxi
- *
- * This library is free software; you can redistribute it and/or modify it
- * under the terms of the MIT license. See `log.c` for details.
- */
+    * Copyright (c) 2020 rxi
+    *
+    * This library is free software; you can redistribute it and/or modify it
+    * under the terms of the MIT license. See `log.c` for details.
+    */
 
 #ifndef LOG_H
 #define LOG_H
@@ -16,13 +16,13 @@
 #define LOG_VERSION "0.1.0"
 
 typedef struct {
-  va_list ap;
-  const char *fmt;
-  const char *file;
-  struct tm *time;
-  void *udata;
-  int line;
-  int level;
+    va_list ap;
+    const char *fmt;
+    const char *file;
+    struct tm *time;
+    void *udata;
+    int line;
+    int level;
 } log_Event;
 
 typedef void (*log_LogFn)(log_Event *ev);

@@ -51,8 +51,8 @@ void timer_init(void) {
 }
 
 void timer_start(uint32_t ms,
-                 void (*on_tick)(uint32_t),
-                 void (*on_finished)(void)) {
+                    void (*on_tick)(uint32_t),
+                    void (*on_finished)(void)) {
     tmr.duration = ms;
     tmr.start_tick = get_tick_ms();
     tmr.on_tick = on_tick;

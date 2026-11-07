@@ -1,0 +1,25 @@
+{
+  "name": "cli",
+  "version": "0.1.0",
+  "description": "Serial CLI + FatFs VFS commands (ls, cd, mkdir, ...)",
+  "build": {
+    "includeDir": ".",
+    "srcDir": ".",
+    "srcFilter": [
+      "+<cli.c>",
+      "+<cli_builtin.c>",
+      "+<cli_vfs.c>",
+      "+<cli_vfs_sd.c>",
+      "+<cli_zmodem.c>"
+    ]
+  },
+  "dependencies": [
+    { "name": "stm32f407_hat_bsp" },
+    { "name": "fatfs" },
+    { "name": "sdcard" },
+    { "name": "mbzm" },
+    { "name": "logger" }
+  ],
+  "frameworks": "stm32cube",
+  "platforms": "ststm32"
+}

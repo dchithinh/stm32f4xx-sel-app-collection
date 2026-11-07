@@ -22,22 +22,22 @@
 #define LCD_PIXEL_FORMAT                LCD_PIXEL_FORMAT_RGB565
 
 typedef struct{
- 	uint16_t x1;
- 	uint16_t x2;
- 	uint16_t y1;
- 	uint16_t y2;
- }lcd_area_t;
+    uint16_t x1;
+    uint16_t x2;
+    uint16_t y1;
+    uint16_t y2;
+    }lcd_area_t;
 
 typedef struct{
- 	uint8_t orientation;
- 	uint8_t pixel_format;
- 	uint8_t * draw_buffer1;
- 	uint8_t * draw_buffer2;
- 	uint32_t write_length;
- 	uint8_t *buff_to_draw;
- 	uint8_t *buff_to_flush;
- 	lcd_area_t display_area;
- } lcd_handle_t;
+    uint8_t orientation;
+    uint8_t pixel_format;
+    uint8_t * draw_buffer1;
+    uint8_t * draw_buffer2;
+    uint32_t write_length;
+    uint8_t *buff_to_draw;
+    uint8_t *buff_to_flush;
+    lcd_area_t display_area;
+    } lcd_handle_t;
 
 /* Exported functions prototypes */
 void lcd_init(void);

@@ -14,8 +14,8 @@ void timer_init(void);
 /// @param on_tick callback for each tick (can be NULL). Parameter = remaining time in ms
 /// @param on_finished callback when timer expires (can be NULL)
 void timer_start(uint32_t ms,
-                 void (*on_tick)(uint32_t),
-                 void (*on_finished)(void));
+                    void (*on_tick)(uint32_t),
+                    void (*on_finished)(void));
 
 /// Stop the current timer
 void timer_stop(void);

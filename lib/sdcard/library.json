@@ -8,8 +8,8 @@
       "+<sd_spi.c>"
     ],
     "flags": [
-      "-I $PROJECT_DIR/lib/sdcard",
-      "-I $PROJECT_DIR/lib/stm32f407_hat_bsp/board"
+      "-I $PROJECT_LIBDEPS_DIR/$PIOENV/sdcard",
+      "-I $PROJECT_LIBDEPS_DIR/$PIOENV/stm32f407_hat_bsp/board"
     ]
   },
   "frameworks": "stm32cube",

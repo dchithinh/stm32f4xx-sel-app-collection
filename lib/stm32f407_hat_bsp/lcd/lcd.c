@@ -1,44 +1,44 @@
 /* The original code is took from : https://github.com/niekiran/EmbeddedGraphicsLVGL-MCU3/tree/main/Projects
- * The modified code is my learning and hands-on experience with STM32F407xx and LCD.
- * 
- * DMA Implementation Notes:
- * ========================
- * This driver supports high-performance LCD flushing using DMA in interrupt mode.
- * 
- * DMA Configuration:
- * - DMA1 Stream 4, Channel 0 (SPI2_TX)
- * - 16-bit transfers for RGB565 pixel format
- * - Interrupt-driven (non-blocking) operation
- * - NVIC Priority: 5 (lower than critical system interrupts)
- * 
- * Operation Flow:
- * 1. lcd_flush() prepares display area and initiates DMA transfer
- * 2. lcd_write_dma() switches SPI to 16-bit mode and starts DMA
- * 3. CPU is free to execute other tasks (LVGL, touch, Pomodoro logic)
- * 4. HAL_SPI_TxCpltCallback() is called when DMA completes:
- *    - De-asserts CS
- *    - Restores SPI to 8-bit mode
- *    - Clears buff_to_flush flag
- * 
- * Buffer Management:
- * - Double buffering: db (draw_buffer1) and wb (draw_buffer2)
- * - buff_to_draw: Currently being filled by application
- * - buff_to_flush: Currently being transferred via DMA
- * - Atomic flag checking prevents buffer corruption
- * 
- * Error Handling:
- * - HAL_SPI_ErrorCallback() handles DMA errors gracefully
- * - Aborts failed transfers and resets state
- * - Application continues without crashing
- * 
- * Performance Impact:
- * - 240x320 RGB565 framebuffer = 153,600 bytes
- * - Transfer time: ~3.7ms @ 42 MHz SPI clock
- * - CPU savings: ~95% compared to blocking mode
- * - Enables smoother UI and better touch responsiveness
- * 
- * To disable DMA (for debugging):
- * Set USE_DMA_FLUSH_LCD to 0 in lcd/config.h (this package)
+    * The modified code is my learning and hands-on experience with STM32F407xx and LCD.
+    * 
+    * DMA Implementation Notes:
+    * ========================
+    * This driver supports high-performance LCD flushing using DMA in interrupt mode.
+    * 
+    * DMA Configuration:
+    * - DMA1 Stream 4, Channel 0 (SPI2_TX)
+    * - 16-bit transfers for RGB565 pixel format
+    * - Interrupt-driven (non-blocking) operation
+    * - NVIC Priority: 5 (lower than critical system interrupts)
+    * 
+    * Operation Flow:
+    * 1. lcd_flush() prepares display area and initiates DMA transfer
+    * 2. lcd_write_dma() switches SPI to 16-bit mode and starts DMA
+    * 3. CPU is free to execute other tasks (LVGL, touch, Pomodoro logic)
+    * 4. HAL_SPI_TxCpltCallback() is called when DMA completes:
+    *    - De-asserts CS
+    *    - Restores SPI to 8-bit mode
+    *    - Clears buff_to_flush flag
+    * 
+    * Buffer Management:
+    * - Double buffering: db (draw_buffer1) and wb (draw_buffer2)
+    * - buff_to_draw: Currently being filled by application
+    * - buff_to_flush: Currently being transferred via DMA
+    * - Atomic flag checking prevents buffer corruption
+    * 
+    * Error Handling:
+    * - HAL_SPI_ErrorCallback() handles DMA errors gracefully
+    * - Aborts failed transfers and resets state
+    * - Application continues without crashing
+    * 
+    * Performance Impact:
+    * - 240x320 RGB565 framebuffer = 153,600 bytes
+    * - Transfer time: ~3.7ms @ 42 MHz SPI clock
+    * - CPU savings: ~95% compared to blocking mode
+    * - Enables smoother UI and better touch responsiveness
+    * 
+    * To disable DMA (for debugging):
+    * Set USE_DMA_FLUSH_LCD to 0 in lcd/config.h (this package)
 */
 
 
@@ -138,35 +138,35 @@ void lcd_init(void)
     lcd_spi_init();
     lcd_spi_enable();
 #if USE_DMA_FLUSH_LCD
-	lcd_dma_init();
-	LV_LOG_USER("========================================");
-	LV_LOG_USER("  LCD DRIVER: DMA MODE ACTIVE");
-	LV_LOG_USER("  DMA1 Stream4, SPI2_TX, 16-bit");
-	LV_LOG_USER("========================================");
+    lcd_dma_init();
+    LV_LOG_USER("========================================");
+    LV_LOG_USER("  LCD DRIVER: DMA MODE ACTIVE");
+    LV_LOG_USER("  DMA1 Stream4, SPI2_TX, 16-bit");
+    LV_LOG_USER("========================================");
 #else
-	LV_LOG_USER("========================================");
-	LV_LOG_USER("  LCD DRIVER: BLOCKING MODE");
-	LV_LOG_USER("========================================");
+    LV_LOG_USER("========================================");
+    LV_LOG_USER("  LCD DRIVER: BLOCKING MODE");
+    LV_LOG_USER("========================================");
 #endif
 
     lcd_reset();
     lcd_config();
 
     hlcd->display_area.x1 = 0;
-	hlcd->display_area.x2 = LCD_ACTIVE_WIDTH - 1;
-	hlcd->display_area.y1 = 0;
-	hlcd->display_area.y2 = LCD_ACTIVE_HEIGHT - 1;
-	hlcd->orientation = LCD_ORIENTATION;
-	hlcd->pixel_format = LCD_PIXEL_FORMAT;
+    hlcd->display_area.x2 = LCD_ACTIVE_WIDTH - 1;
+    hlcd->display_area.y1 = 0;
+    hlcd->display_area.y2 = LCD_ACTIVE_HEIGHT - 1;
+    hlcd->orientation = LCD_ORIENTATION;
+    hlcd->pixel_format = LCD_PIXEL_FORMAT;
 
-	uint16_t x1 = hlcd->display_area.x1;
-	uint16_t x2 = hlcd->display_area.x2;
-	uint16_t y1 = hlcd->display_area.y1;
-	uint16_t y2 = hlcd->display_area.y2;
-	lcd_set_orientation(hlcd->orientation);
-	lcd_set_display_area(x1, x2, y1, y2);
+    uint16_t x1 = hlcd->display_area.x1;
+    uint16_t x2 = hlcd->display_area.x2;
+    uint16_t y1 = hlcd->display_area.y1;
+    uint16_t y2 = hlcd->display_area.y2;
+    lcd_set_orientation(hlcd->orientation);
+    lcd_set_display_area(x1, x2, y1, y2);
 	
-	lcd_buffer_init(hlcd);
+    lcd_buffer_init(hlcd);
 }
 
 void lcd_pin_init(void)
@@ -254,10 +254,10 @@ static void lcd_spi_enable(void)
 #if USE_DMA_FLUSH_LCD
 static void lcd_dma_init(void)
 {
-	/* Enable DMA1 clock */
-	__HAL_RCC_DMA1_CLK_ENABLE();
+    /* Enable DMA1 clock */
+    __HAL_RCC_DMA1_CLK_ENABLE();
 
-	/* Configure DMA1 Stream4 for SPI2_TX */
+    /* Configure DMA1 Stream4 for SPI2_TX */
     lcd_dma_handle.Instance = DMA1_Stream4;
     lcd_dma_handle.Init.Channel = DMA_CHANNEL_0;
     lcd_dma_handle.Init.Direction = DMA_MEMORY_TO_PERIPH;
@@ -271,18 +271,18 @@ static void lcd_dma_init(void)
     
     if (HAL_DMA_Init(&lcd_dma_handle) != HAL_OK)
     {
-		LV_LOG_ERROR("LCD DMA init failed");
-		while(1);
+        LV_LOG_ERROR("LCD DMA init failed");
+        while(1);
     }
 
-	/* Link DMA handle to SPI handle */
+    /* Link DMA handle to SPI handle */
     __HAL_LINKDMA(&lcd_spi_handle, hdmatx, lcd_dma_handle);
 
-	/* Configure NVIC for DMA interrupt */
-	HAL_NVIC_SetPriority(DMA1_Stream4_IRQn, 5, 0);  // Lower priority than critical interrupts
-	HAL_NVIC_EnableIRQ(DMA1_Stream4_IRQn);
+    /* Configure NVIC for DMA interrupt */
+    HAL_NVIC_SetPriority(DMA1_Stream4_IRQn, 5, 0);  // Lower priority than critical interrupts
+    HAL_NVIC_EnableIRQ(DMA1_Stream4_IRQn);
 
-	LV_LOG_USER("LCD DMA initialized successfully");
+    LV_LOG_USER("LCD DMA initialized successfully");
 }
 #endif // USE_DMA_FLUSH_LCD
 
@@ -300,18 +300,18 @@ static void lcd_reset(void)
 static void lcd_write_command(uint8_t cmd)
 {
 #ifndef USE_STM32_API
-	SPI_TypeDef *pSPI = LCD_SPI;
+    SPI_TypeDef *pSPI = LCD_SPI;
 #endif
     LCD_CS_LOW();
     LCD_DCX_LOW(); // Command mode
 	
-	/*When using STM32 API, the config failed and LCD can't display correct color*/
+    /*When using STM32 API, the config failed and LCD can't display correct color*/
 
 #if USE_STM32_API
     HAL_SPI_Transmit(&lcd_spi_handle, &cmd, 1, HAL_MAX_DELAY);
 	
 #else
-	while (!(pSPI->SR & SPI_SR_TXE));
+    while (!(pSPI->SR & SPI_SR_TXE));
     pSPI->DR = cmd;
     while (!(pSPI->SR & SPI_SR_TXE));
     while (pSPI->SR & SPI_SR_BSY);
@@ -324,17 +324,17 @@ static void lcd_write_command(uint8_t cmd)
 static void lcd_write_data(uint8_t *buffer, uint32_t length)
 {
 #ifndef USE_STM32_API
-	SPI_TypeDef *pSPI = LCD_SPI;
+    SPI_TypeDef *pSPI = LCD_SPI;
 #endif
 
     LCD_DCX_HIGH(); // Data mode
-	LCD_CS_LOW();
+    LCD_CS_LOW();
 	
-	/*When using STM32 API, the config failed and LCD can't display correct color*/
+    /*When using STM32 API, the config failed and LCD can't display correct color*/
 #if USE_STM32_API
     HAL_SPI_Transmit(&lcd_spi_handle, buffer, length, HAL_MAX_DELAY);
 #else
-	for (uint32_t i = 0; i < length; i++) {
+    for (uint32_t i = 0; i < length; i++) {
         while (!(pSPI->SR & SPI_SR_TXE));      // Wait until TX buffer is empty
         pSPI->DR = buffer[i];                  // Send byte
     }
@@ -347,124 +347,124 @@ static void lcd_write_data(uint8_t *buffer, uint32_t length)
 
 static void lcd_config(void)
 {
-     uint8_t params[15];
-	lcd_write_command(ILI9341_SWRESET);
-	lcd_write_command(ILI9341_POWERB);
-	params[0] = 0x00;
-	params[1] = 0xD9;
-	params[2] = 0x30;
-	lcd_write_data(params, 3);
+        uint8_t params[15];
+    lcd_write_command(ILI9341_SWRESET);
+    lcd_write_command(ILI9341_POWERB);
+    params[0] = 0x00;
+    params[1] = 0xD9;
+    params[2] = 0x30;
+    lcd_write_data(params, 3);
 
-	lcd_write_command(ILI9341_POWER_SEQ);
-	params[0]= 0x64;
-	params[1]= 0x03;
-	params[2]= 0X12;
-	params[3]= 0X81;
-	lcd_write_data(params, 4);
+    lcd_write_command(ILI9341_POWER_SEQ);
+    params[0]= 0x64;
+    params[1]= 0x03;
+    params[2]= 0X12;
+    params[3]= 0X81;
+    lcd_write_data(params, 4);
 
-	lcd_write_command(ILI9341_DTCA);
-	params[0]= 0x85;
-	params[1]= 0x10;
-	params[2]= 0x7A;
-	lcd_write_data(params, 3);
+    lcd_write_command(ILI9341_DTCA);
+    params[0]= 0x85;
+    params[1]= 0x10;
+    params[2]= 0x7A;
+    lcd_write_data(params, 3);
 
-	lcd_write_command(ILI9341_POWERA);
-	params[0]= 0x39;
-	params[1]= 0x2C;
-	params[2]= 0x00;
-	params[3]= 0x34;
-	params[4]= 0x02;
-	lcd_write_data(params, 5);
+    lcd_write_command(ILI9341_POWERA);
+    params[0]= 0x39;
+    params[1]= 0x2C;
+    params[2]= 0x00;
+    params[3]= 0x34;
+    params[4]= 0x02;
+    lcd_write_data(params, 5);
 
-	lcd_write_command(ILI9341_PRC);
-	params[0]= 0x20;
-	lcd_write_data(params, 1);
+    lcd_write_command(ILI9341_PRC);
+    params[0]= 0x20;
+    lcd_write_data(params, 1);
 
-	lcd_write_command(ILI9341_DTCB);
-	params[0]= 0x00;
-	params[1]= 0x00;
-	lcd_write_data(params, 2);
+    lcd_write_command(ILI9341_DTCB);
+    params[0]= 0x00;
+    params[1]= 0x00;
+    lcd_write_data(params, 2);
 
-	lcd_write_command(ILI9341_POWER1);
-	params[0]= 0x1B;
-	lcd_write_data(params, 1);
+    lcd_write_command(ILI9341_POWER1);
+    params[0]= 0x1B;
+    lcd_write_data(params, 1);
 
-	lcd_write_command(ILI9341_POWER2);
-	params[0]= 0x12;
-	lcd_write_data(params, 1);
+    lcd_write_command(ILI9341_POWER2);
+    params[0]= 0x12;
+    lcd_write_data(params, 1);
 
-	lcd_write_command(ILI9341_VCOM1);
-	params[0]= 0x08;
-	params[1]= 0x26;
-	lcd_write_data(params, 2);
+    lcd_write_command(ILI9341_VCOM1);
+    params[0]= 0x08;
+    params[1]= 0x26;
+    lcd_write_data(params, 2);
 
-	lcd_write_command(ILI9341_VCOM2);
-	params[0]= 0XB7;
-	lcd_write_data(params, 1);
+    lcd_write_command(ILI9341_VCOM2);
+    params[0]= 0XB7;
+    lcd_write_data(params, 1);
 
 
-	lcd_write_command(ILI9341_PIXEL_FORMAT);
-	params[0]= 0x55; //select RGB565
-	lcd_write_data(params, 1);
+    lcd_write_command(ILI9341_PIXEL_FORMAT);
+    params[0]= 0x55; //select RGB565
+    lcd_write_data(params, 1);
 
-	lcd_write_command(ILI9341_FRMCTR1);
-	params[0]= 0x00;
-	params[1]= 0x1B;//frame rate = 70
-	lcd_write_data(params, 2);
+    lcd_write_command(ILI9341_FRMCTR1);
+    params[0]= 0x00;
+    params[1]= 0x1B;//frame rate = 70
+    lcd_write_data(params, 2);
 
-	lcd_write_command(ILI9341_DFC);    // Display Function Control
-	params[0]= 0x0A;
-	params[1]= 0xA2;
-	lcd_write_data(params, 2);
+    lcd_write_command(ILI9341_DFC);    // Display Function Control
+    params[0]= 0x0A;
+    params[1]= 0xA2;
+    lcd_write_data(params, 2);
 
-	lcd_write_command(ILI9341_3GAMMA_EN);    // 3Gamma Function Disable
-	params[0]= 0x02; //LCD_WR_DATA(0x00);
-	lcd_write_data(params, 1);
+    lcd_write_command(ILI9341_3GAMMA_EN);    // 3Gamma Function Disable
+    params[0]= 0x02; //LCD_WR_DATA(0x00);
+    lcd_write_data(params, 1);
 
-	lcd_write_command(ILI9341_GAMMA);
-	params[0]= 0x01;
-	lcd_write_data(params, 1);
+    lcd_write_command(ILI9341_GAMMA);
+    params[0]= 0x01;
+    lcd_write_data(params, 1);
 
-	lcd_write_command(ILI9341_PGAMMA);    //Set Gamma
-	params[0]= 0x0F;
-	params[1]= 0x1D;
-	params[2]= 0x1A;
-	params[3]= 0x0A;
-	params[4]= 0x0D;
-	params[5]= 0x07;
-	params[6]= 0x49;
-	params[7]= 0X66;
-	params[8]= 0x3B;
-	params[9]= 0x07;
-	params[10]= 0x11;
-	params[11]= 0x01;
-	params[12]= 0x09;
-	params[13]= 0x05;
-	params[14]= 0x04;
-	lcd_write_data(params, 15);
+    lcd_write_command(ILI9341_PGAMMA);    //Set Gamma
+    params[0]= 0x0F;
+    params[1]= 0x1D;
+    params[2]= 0x1A;
+    params[3]= 0x0A;
+    params[4]= 0x0D;
+    params[5]= 0x07;
+    params[6]= 0x49;
+    params[7]= 0X66;
+    params[8]= 0x3B;
+    params[9]= 0x07;
+    params[10]= 0x11;
+    params[11]= 0x01;
+    params[12]= 0x09;
+    params[13]= 0x05;
+    params[14]= 0x04;
+    lcd_write_data(params, 15);
 
-	lcd_write_command(ILI9341_NGAMMA);
-	params[0]= 0x00;
-	params[1]= 0x18;
-	params[2]= 0x1D;
-	params[3]= 0x02;
-	params[4]= 0x0F;
-	params[5]= 0x04;
-	params[6]= 0x36;
-	params[7]= 0x13;
-	params[8]= 0x4C;
-	params[9]= 0x07;
-	params[10]= 0x13;
-	params[11]= 0x0F;
-	params[12]= 0x2E;
-	params[13]= 0x2F;
-	params[14]= 0x05;
-	lcd_write_data(params, 15);
+    lcd_write_command(ILI9341_NGAMMA);
+    params[0]= 0x00;
+    params[1]= 0x18;
+    params[2]= 0x1D;
+    params[3]= 0x02;
+    params[4]= 0x0F;
+    params[5]= 0x04;
+    params[6]= 0x36;
+    params[7]= 0x13;
+    params[8]= 0x4C;
+    params[9]= 0x07;
+    params[10]= 0x13;
+    params[11]= 0x0F;
+    params[12]= 0x2E;
+    params[13]= 0x2F;
+    params[14]= 0x05;
+    lcd_write_data(params, 15);
 
-	lcd_write_command(ILI9341_SLEEP_OUT); //Exit Sleep
-	HAL_Delay(50); // Wait for 50 ms
-	HAL_Delay(50); // Wait for 50 ms
-	lcd_write_command(ILI9341_DISPLAY_ON); //display on
+    lcd_write_command(ILI9341_SLEEP_OUT); //Exit Sleep
+    HAL_Delay(50); // Wait for 50 ms
+    HAL_Delay(50); // Wait for 50 ms
+    lcd_write_command(ILI9341_DISPLAY_ON); //display on
 }
 
 
@@ -477,264 +477,264 @@ void lcd_set_background_color(uint32_t rgb888)
 void lcd_fill_rect(uint32_t rgb888, uint32_t x_start, uint32_t x_width, uint32_t y_start,uint32_t y_height)
 {
     uint32_t total_bytes_to_write = 0;
-	uint32_t bytes_sent_so_far = 0;
-	uint32_t remaining_bytes = 0;;
-	uint32_t npix;
-	uint32_t pixels_sent = 0;
-	uint32_t x1,y1;
-	uint32_t pixel_per_line = x_width;
+    uint32_t bytes_sent_so_far = 0;
+    uint32_t remaining_bytes = 0;;
+    uint32_t npix;
+    uint32_t pixels_sent = 0;
+    uint32_t x1,y1;
+    uint32_t pixel_per_line = x_width;
 
-	if((x_start+x_width) > LCD_ACTIVE_WIDTH) return;
-	if((y_start+y_height) > LCD_ACTIVE_HEIGHT) return;
+    if((x_start+x_width) > LCD_ACTIVE_WIDTH) return;
+    if((y_start+y_height) > LCD_ACTIVE_HEIGHT) return;
 
-	//1. calculate total number of bytes written in to DB
-	total_bytes_to_write = get_total_bytes(hlcd,x_width,y_height);
-	remaining_bytes = total_bytes_to_write;
-	while(remaining_bytes)
-	{
-		x1 = x_start+(pixels_sent % pixel_per_line);
-		y1 = y_start+(pixels_sent / pixel_per_line);
+    //1. calculate total number of bytes written in to DB
+    total_bytes_to_write = get_total_bytes(hlcd,x_width,y_height);
+    remaining_bytes = total_bytes_to_write;
+    while(remaining_bytes)
+    {
+        x1 = x_start+(pixels_sent % pixel_per_line);
+        y1 = y_start+(pixels_sent / pixel_per_line);
 
-		make_area(&hlcd->display_area,x1,x_width,y1,y_height);
+        make_area(&hlcd->display_area,x1,x_width,y1,y_height);
 
-		if(x1 != x_start)
-		{
-			npix = x_start+x_width - x1;
-		}
-		else
-		{
-			npix = bytes_to_pixels(remaining_bytes,hlcd->pixel_format);
-		}
+        if(x1 != x_start)
+        {
+            npix = x_start+x_width - x1;
+        }
+        else
+        {
+            npix = bytes_to_pixels(remaining_bytes,hlcd->pixel_format);
+        }
 
-		bytes_sent_so_far  +=  copy_to_draw_buffer(hlcd,pixels_to_bytes(npix,hlcd->pixel_format),rgb888);
-		pixels_sent = bytes_to_pixels(bytes_sent_so_far,hlcd->pixel_format);
-		remaining_bytes = total_bytes_to_write - bytes_sent_so_far;
-	}
+        bytes_sent_so_far  +=  copy_to_draw_buffer(hlcd,pixels_to_bytes(npix,hlcd->pixel_format),rgb888);
+        pixels_sent = bytes_to_pixels(bytes_sent_so_far,hlcd->pixel_format);
+        remaining_bytes = total_bytes_to_write - bytes_sent_so_far;
+    }
 }
 
 
 void lcd_set_orientation(uint8_t orientation)
 {
-	uint8_t param;
+    uint8_t param;
 
-	if(orientation == LANDSCAPE){
-		param = MADCTL_MV | MADCTL_MY | MADCTL_BGR; /*Memory Access Control <Landscape setting>*/
-	}else if(orientation == PORTRAIT){
-		param = MADCTL_MY | MADCTL_MX | MADCTL_RGB;  /* Memory Access Control <portrait setting> */
-	}
+    if(orientation == LANDSCAPE){
+        param = MADCTL_MV | MADCTL_MY | MADCTL_BGR; /*Memory Access Control <Landscape setting>*/
+    }else if(orientation == PORTRAIT){
+        param = MADCTL_MY | MADCTL_MX | MADCTL_RGB;  /* Memory Access Control <portrait setting> */
+    }
 
-	lcd_write_command(ILI9341_MAC);    // Memory Access Control command
-	lcd_write_data(&param, 1);
+    lcd_write_command(ILI9341_MAC);    // Memory Access Control command
+    lcd_write_data(&param, 1);
 }
 
 void lcd_set_display_area(uint16_t x1, uint16_t x2, uint16_t y1, uint16_t y2)
 {
-	uint8_t params[4];
-	//Set the column address
-	params[0] = HIGH_16(x1);
-	params[1] = LOW_16(x1);
-	params[2] = HIGH_16(x2);
-	params[3] = LOW_16(x2);
-	lcd_write_command(ILI9341_CASET);
-	lcd_write_data(params, 4);
+    uint8_t params[4];
+    //Set the column address
+    params[0] = HIGH_16(x1);
+    params[1] = LOW_16(x1);
+    params[2] = HIGH_16(x2);
+    params[3] = LOW_16(x2);
+    lcd_write_command(ILI9341_CASET);
+    lcd_write_data(params, 4);
 
-	//Set the row address
-	params[0] = HIGH_16(y1);
-	params[1] = LOW_16(y1);
-	params[2] = HIGH_16(y2);
-	params[3] = LOW_16(y2);
-	lcd_write_command(ILI9341_RASET);
-	lcd_write_data(params, 4);
+    //Set the row address
+    params[0] = HIGH_16(y1);
+    params[1] = LOW_16(y1);
+    params[2] = HIGH_16(y2);
+    params[3] = LOW_16(y2);
+    lcd_write_command(ILI9341_RASET);
+    lcd_write_data(params, 4);
 	
 }
 
 static void lcd_buffer_init(lcd_handle_t *lcd)
 {
-	lcd->draw_buffer1 = db;
-	lcd->draw_buffer2 = wb;
-	lcd->buff_to_draw = NULL;
-	lcd->buff_to_flush = NULL;
+    lcd->draw_buffer1 = db;
+    lcd->draw_buffer2 = wb;
+    lcd->buff_to_draw = NULL;
+    lcd->buff_to_flush = NULL;
 }
 
 static uint8_t is_lcd_write_allowed(lcd_handle_t *hlcd)
 {
-	uint8_t result;
-	__disable_irq();
-	result = (!hlcd->buff_to_flush) ? TRUE : FALSE;
-	__enable_irq();
+    uint8_t result;
+    __disable_irq();
+    result = (!hlcd->buff_to_flush) ? TRUE : FALSE;
+    __enable_irq();
 
-	return result;
+    return result;
 }
 
 void lcd_send_cmd_mem_write(void)
 {
-	lcd_write_command(ILI9341_GRAM);
+    lcd_write_command(ILI9341_GRAM);
 }
 
 static void lcd_flush(lcd_handle_t *hlcd)
 {
-	uint16_t x1 = hlcd->display_area.x1;
-	uint16_t x2 = hlcd->display_area.x2;
-	uint16_t y1 = hlcd->display_area.y1;
-	uint16_t y2 = hlcd->display_area.y2;
-	lcd_set_display_area(x1, x2, y1, y2);
-	lcd_send_cmd_mem_write();
+    uint16_t x1 = hlcd->display_area.x1;
+    uint16_t x2 = hlcd->display_area.x2;
+    uint16_t y1 = hlcd->display_area.y1;
+    uint16_t y2 = hlcd->display_area.y2;
+    lcd_set_display_area(x1, x2, y1, y2);
+    lcd_send_cmd_mem_write();
 
 #if USE_DMA_FLUSH_LCD
-	lcd_write_dma(hlcd->buff_to_flush, hlcd->write_length);
-	/* Note: buff_to_flush will be cleared in HAL_SPI_TxCpltCallback after DMA completes */
+    lcd_write_dma(hlcd->buff_to_flush, hlcd->write_length);
+    /* Note: buff_to_flush will be cleared in HAL_SPI_TxCpltCallback after DMA completes */
 #else
-	lcd_write(hlcd->buff_to_flush, hlcd->write_length);
-	hlcd->buff_to_flush = NULL;  /* Clear immediately in blocking mode */
+    lcd_write(hlcd->buff_to_flush, hlcd->write_length);
+    hlcd->buff_to_flush = NULL;  /* Clear immediately in blocking mode */
 #endif
 }
 
 static uint16_t convert_rgb888_to_rgb565(uint32_t rgb888)
 {
     uint16_t r,g,b;
-	r = (rgb888 >> 19) & 0x1FU; // (A) 1111 1111 | (R) 1111 1111 | (G) 1111 1111 | (B) 1111 1111 -> 000 0000 0000 0000 0000 1111 1111 | 1111 1
-	g = (rgb888 >> 10) & 0x3FU;
-	b = (rgb888 >> 3)  & 0x1FU;
-	return (uint16_t)((r << 11) | (g << 5) | b);
+    r = (rgb888 >> 19) & 0x1FU; // (A) 1111 1111 | (R) 1111 1111 | (G) 1111 1111 | (B) 1111 1111 -> 000 0000 0000 0000 0000 1111 1111 | 1111 1
+    g = (rgb888 >> 10) & 0x3FU;
+    b = (rgb888 >> 3)  & 0x1FU;
+    return (uint16_t)((r << 11) | (g << 5) | b);
 }
 
 static uint32_t get_total_bytes(lcd_handle_t *hlcd,uint32_t w , uint32_t h)
 {
     //TODO: Add support for other pixel formats, Now just RGB565 is supported
-	uint8_t bytes_per_pixel = 2;
-	if(hlcd->pixel_format == LCD_PIXEL_FORMAT){
-		bytes_per_pixel = 2;
-	}
+    uint8_t bytes_per_pixel = 2;
+    if(hlcd->pixel_format == LCD_PIXEL_FORMAT){
+        bytes_per_pixel = 2;
+    }
     else {
         LV_LOG_WARN("Unsupported pixel format: %d", hlcd->pixel_format);
     }
-	return (w * h * bytes_per_pixel);
+    return (w * h * bytes_per_pixel);
 }
 
 static void make_area(lcd_area_t *area,uint32_t x_start, uint32_t x_width,uint32_t y_start,uint32_t y_height){
 
-	uint16_t lcd_total_width,lcd_total_height;
+    uint16_t lcd_total_width,lcd_total_height;
 
-	lcd_total_width =  LCD_ACTIVE_WIDTH-1;
-	lcd_total_height = LCD_ACTIVE_HEIGHT -1;
+    lcd_total_width =  LCD_ACTIVE_WIDTH-1;
+    lcd_total_height = LCD_ACTIVE_HEIGHT -1;
 
-	area->x1 = x_start;
-	area->x2 = x_start + x_width -1;
-	area->y1 = y_start;
-	area->y2 = y_start + y_height -1;
+    area->x1 = x_start;
+    area->x2 = x_start + x_width -1;
+    area->y1 = y_start;
+    area->y2 = y_start + y_height -1;
 
-	area->x2 = (area->x2 > lcd_total_width) ? lcd_total_width :area->x2;
-	area->y2 = (area->y2 > lcd_total_height) ? lcd_total_height : area->y2;
+    area->x2 = (area->x2 > lcd_total_width) ? lcd_total_width :area->x2;
+    area->y2 = (area->y2 > lcd_total_height) ? lcd_total_height : area->y2;
 
 }
 
 static uint8_t *get_buff(lcd_handle_t *hlcd)
 {
-	uint32_t buf1 = (uint32_t)hlcd->draw_buffer1;
-	uint32_t buf2 = (uint32_t)hlcd->draw_buffer2;
-	uint8_t *result = NULL;
+    uint32_t buf1 = (uint32_t)hlcd->draw_buffer1;
+    uint32_t buf2 = (uint32_t)hlcd->draw_buffer2;
+    uint8_t *result = NULL;
 
-	__disable_irq();
-	if(hlcd->buff_to_draw == NULL && hlcd->buff_to_flush == NULL){
-		result = hlcd->draw_buffer1;
-	}else if((uint32_t)hlcd->buff_to_flush == buf1 && hlcd->buff_to_draw == NULL ){
-		result = hlcd->draw_buffer2;
-	}else if ((uint32_t)hlcd->buff_to_flush == buf2 && hlcd->buff_to_draw == NULL){
-		result = hlcd->draw_buffer1;
-	}
-	__enable_irq();
+    __disable_irq();
+    if(hlcd->buff_to_draw == NULL && hlcd->buff_to_flush == NULL){
+        result = hlcd->draw_buffer1;
+    }else if((uint32_t)hlcd->buff_to_flush == buf1 && hlcd->buff_to_draw == NULL ){
+        result = hlcd->draw_buffer2;
+    }else if ((uint32_t)hlcd->buff_to_flush == buf2 && hlcd->buff_to_draw == NULL){
+        result = hlcd->draw_buffer1;
+    }
+    __enable_irq();
 
-	return result;
+    return result;
 }
 
 static uint32_t bytes_to_pixels(uint32_t nbytes, uint8_t pixel_format)
 {
-	UNUSED(pixel_format);
-	return nbytes/2;
+    UNUSED(pixel_format);
+    return nbytes/2;
 
 }
 
 static uint32_t pixels_to_bytes(uint32_t pixels, uint8_t pixel_format)
 {
-	UNUSED(pixel_format);
-	return pixels * 2UL;
+    UNUSED(pixel_format);
+    return pixels * 2UL;
 }
 
 static uint32_t copy_to_draw_buffer(lcd_handle_t *hlcd,uint32_t nbytes,uint32_t rgb888)
 {
-	uint16_t *fb_ptr = NULL;
-	uint32_t npixels;
+    uint16_t *fb_ptr = NULL;
+    uint32_t npixels;
 	
-	/* Get available buffer (returns NULL if both buffers busy) */
-	hlcd->buff_to_draw = get_buff(hlcd);
+    /* Get available buffer (returns NULL if both buffers busy) */
+    hlcd->buff_to_draw = get_buff(hlcd);
 	
 #if USE_DMA_FLUSH_LCD
-	/* In DMA mode: If both buffers busy, yield briefly */
-	uint32_t timeout = 0;
-	while(hlcd->buff_to_draw == NULL) {
-		/* Small delay to yield CPU instead of spinning at 100% */
-		for(volatile uint32_t i = 0; i < 100; i++);  /* ~1us delay at 84MHz */
-		hlcd->buff_to_draw = get_buff(hlcd);
+    /* In DMA mode: If both buffers busy, yield briefly */
+    uint32_t timeout = 0;
+    while(hlcd->buff_to_draw == NULL) {
+        /* Small delay to yield CPU instead of spinning at 100% */
+        for(volatile uint32_t i = 0; i < 100; i++);  /* ~1us delay at 84MHz */
+        hlcd->buff_to_draw = get_buff(hlcd);
 		
-		/* Safety timeout to prevent infinite loop */
-		if(++timeout > 10000) {
-			LV_LOG_ERROR("Buffer timeout!");
-			break;
-		}
-	}
+        /* Safety timeout to prevent infinite loop */
+        if(++timeout > 10000) {
+            LV_LOG_ERROR("Buffer timeout!");
+            break;
+        }
+    }
 #else
-	/* In blocking mode: Should never be NULL (previous transfer completes immediately) */
-	if(hlcd->buff_to_draw == NULL) {
-		LV_LOG_ERROR("No buffer available in blocking mode!");
-		return 0;
-	}
+    /* In blocking mode: Should never be NULL (previous transfer completes immediately) */
+    if(hlcd->buff_to_draw == NULL) {
+        LV_LOG_ERROR("No buffer available in blocking mode!");
+        return 0;
+    }
 #endif
 	
-	fb_ptr = (uint16_t*)hlcd->buff_to_draw;
-	nbytes =  ((nbytes > DB_SIZE)?DB_SIZE:nbytes);
-	npixels= bytes_to_pixels(nbytes,hlcd->pixel_format);
+    fb_ptr = (uint16_t*)hlcd->buff_to_draw;
+    nbytes =  ((nbytes > DB_SIZE)?DB_SIZE:nbytes);
+    npixels= bytes_to_pixels(nbytes,hlcd->pixel_format);
 	
-	/* Fill buffer with color */
-	for(uint32_t i = 0 ; i < npixels ;i++){
-		*fb_ptr = convert_rgb888_to_rgb565(rgb888);
-		fb_ptr++;
-	}
+    /* Fill buffer with color */
+    for(uint32_t i = 0 ; i < npixels ;i++){
+        *fb_ptr = convert_rgb888_to_rgb565(rgb888);
+        fb_ptr++;
+    }
 	
-	hlcd->write_length = pixels_to_bytes(npixels,hlcd->pixel_format);
-	hlcd->buff_to_flush = hlcd->buff_to_draw;
-	hlcd->buff_to_draw = NULL;
-	lcd_flush(hlcd);
+    hlcd->write_length = pixels_to_bytes(npixels,hlcd->pixel_format);
+    hlcd->buff_to_flush = hlcd->buff_to_draw;
+    hlcd->buff_to_draw = NULL;
+    lcd_flush(hlcd);
 	
-	return pixels_to_bytes(npixels,hlcd->pixel_format);
+    return pixels_to_bytes(npixels,hlcd->pixel_format);
 }
 
 #if USE_DMA_FLUSH_LCD
 static void lcd_write_dma(uint8_t *buffer, uint32_t length)
 {
-	HAL_StatusTypeDef status;
+    HAL_StatusTypeDef status;
 	
-	/* Switch SPI to 16-bit mode for pixel data */
-	__HAL_SPI_DISABLE(&lcd_spi_handle);
-	SET_SPI_16BIT_MODE(&lcd_spi_handle);
-	__HAL_SPI_ENABLE(&lcd_spi_handle);
+    /* Switch SPI to 16-bit mode for pixel data */
+    __HAL_SPI_DISABLE(&lcd_spi_handle);
+    SET_SPI_16BIT_MODE(&lcd_spi_handle);
+    __HAL_SPI_ENABLE(&lcd_spi_handle);
 
-	/* Assert chip select */
-	LCD_CS_LOW();
+    /* Assert chip select */
+    LCD_CS_LOW();
 
-	/* Start DMA transfer in interrupt mode */
-	status = HAL_SPI_Transmit_DMA(&lcd_spi_handle, buffer, length / 2);
+    /* Start DMA transfer in interrupt mode */
+    status = HAL_SPI_Transmit_DMA(&lcd_spi_handle, buffer, length / 2);
 	
-	if (status != HAL_OK)
-	{
-		/* Fallback: restore state on error */
-		LCD_CS_HIGH();
-		__HAL_SPI_DISABLE(&lcd_spi_handle);
-		SET_SPI_8BIT_MODE(&lcd_spi_handle);
-		__HAL_SPI_ENABLE(&lcd_spi_handle);
+    if (status != HAL_OK)
+    {
+        /* Fallback: restore state on error */
+        LCD_CS_HIGH();
+        __HAL_SPI_DISABLE(&lcd_spi_handle);
+        SET_SPI_8BIT_MODE(&lcd_spi_handle);
+        __HAL_SPI_ENABLE(&lcd_spi_handle);
 		
-		/* Clear buffer state */
-		hlcd->buff_to_flush = NULL;
-	}
+        /* Clear buffer state */
+        hlcd->buff_to_flush = NULL;
+    }
 }
 #endif // USE_DMA_FLUSH_LCD
 
@@ -742,7 +742,7 @@ static void lcd_write_dma(uint8_t *buffer, uint32_t length)
 void lcd_write_pixels(uint8_t *buffer, uint32_t length)
 {
 #if USE_DMA_FLUSH_LCD
-	lcd_write_dma(buffer, length);
+    lcd_write_dma(buffer, length);
 #else
     // Switch SPI to 16-bit mode
     __HAL_SPI_DISABLE(&lcd_spi_handle);
@@ -824,62 +824,62 @@ void ili9341_test_draw_color_bars(void)
 
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-	/* Verify this is our SPI peripheral */
-	if (hspi->Instance != LCD_SPI)
-		return;
+    /* Verify this is our SPI peripheral */
+    if (hspi->Instance != LCD_SPI)
+        return;
 	
-	/* De-assert chip select */
-	LCD_CS_HIGH();
+    /* De-assert chip select */
+    LCD_CS_HIGH();
 
-	/* Restore SPI to 8-bit mode for commands */
-	__HAL_SPI_DISABLE(hspi);
-	SET_SPI_8BIT_MODE(hspi);
-	__HAL_SPI_ENABLE(hspi);
+    /* Restore SPI to 8-bit mode for commands */
+    __HAL_SPI_DISABLE(hspi);
+    SET_SPI_8BIT_MODE(hspi);
+    __HAL_SPI_ENABLE(hspi);
 
-	/* Clear buffer flush flag - buffer is now free */
-	if (hlcd != NULL)
-		hlcd->buff_to_flush = NULL;
+    /* Clear buffer flush flag - buffer is now free */
+    if (hlcd != NULL)
+        hlcd->buff_to_flush = NULL;
 
 #if USE_DMA_FLUSH_LCD
-	/* Notify LVGL that flush is complete */
-	tft_dma_transfer_complete();
+    /* Notify LVGL that flush is complete */
+    tft_dma_transfer_complete();
 #endif
 }
 
 void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi)
 {
-	/* Verify this is our SPI peripheral */
-	if (hspi->Instance != LCD_SPI)
-		return;
+    /* Verify this is our SPI peripheral */
+    if (hspi->Instance != LCD_SPI)
+        return;
 	
-	/* De-assert chip select */
-	LCD_CS_HIGH();
+    /* De-assert chip select */
+    LCD_CS_HIGH();
 	
-	/* Abort DMA transfer */
-	if (hspi->hdmatx != NULL)
-		HAL_DMA_Abort(hspi->hdmatx);
+    /* Abort DMA transfer */
+    if (hspi->hdmatx != NULL)
+        HAL_DMA_Abort(hspi->hdmatx);
 	
-	/* Restore SPI to 8-bit mode */
-	__HAL_SPI_DISABLE(hspi);
-	SET_SPI_8BIT_MODE(hspi);
-	__HAL_SPI_ENABLE(hspi);
+    /* Restore SPI to 8-bit mode */
+    __HAL_SPI_DISABLE(hspi);
+    SET_SPI_8BIT_MODE(hspi);
+    __HAL_SPI_ENABLE(hspi);
 	
-	/* Clear buffer state to allow recovery */
-	if (hlcd != NULL) {
-		hlcd->buff_to_flush = NULL;
-		hlcd->buff_to_draw = NULL;
-	}
+    /* Clear buffer state to allow recovery */
+    if (hlcd != NULL) {
+        hlcd->buff_to_flush = NULL;
+        hlcd->buff_to_draw = NULL;
+    }
 	
 #if USE_DMA_FLUSH_LCD
-	/* Still need to notify LVGL even on error */
-	tft_dma_transfer_complete();
+    /* Still need to notify LVGL even on error */
+    tft_dma_transfer_complete();
 #endif
 }
 
 void HAL_SPI_TxHalfCpltCallback(SPI_HandleTypeDef *hspi)
 {
-	// Handle half transfer complete here if needed
-	// This is optional and can be used for debugging or other purposes
+    // Handle half transfer complete here if needed
+    // This is optional and can be used for debugging or other purposes
 }
 
 void *lcd_get_draw_buffer1_addr(void)
@@ -888,5 +888,5 @@ void *lcd_get_draw_buffer1_addr(void)
 }
 void *lcd_get_draw_buffer2_addr(void)
 {
-	return (void*)hlcd->draw_buffer2;
+    return (void*)hlcd->draw_buffer2;
 }

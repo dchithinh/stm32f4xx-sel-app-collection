@@ -1,28 +1,28 @@
 /**
-  ******************************************************************************
-  * @file    ili9341_reg.h
-  * @author  MCD Application Team
-  * @brief   This file contains all the functions prototypes for the ili9341_reg.c
-  *          driver.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2021 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+    ******************************************************************************
+    * @file    ili9341_reg.h
+    * @author  MCD Application Team
+    * @brief   This file contains all the functions prototypes for the ili9341_reg.c
+    *          driver.
+    ******************************************************************************
+    * @attention
+    *
+    * Copyright (c) 2021 STMicroelectronics.
+    * All rights reserved.
+    *
+    * This software is licensed under terms that can be found in the LICENSE file
+    * in the root directory of this software component.
+    * If no LICENSE file comes with this software, it is provided AS-IS.
+    *
+    ******************************************************************************
+    */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef ILI9341_REGS_H
 #define ILI9341_REGS_H
 
 #ifdef __cplusplus
- extern "C" {
+    extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -30,8 +30,8 @@
 #include <stdint.h>
 
 /**
-  * @brief  ILI9341 Registers
-  */
+    * @brief  ILI9341 Registers
+    */
 /* Level 1 Commands */
 #define ILI9341_SWRESET             0x01U   /* Software Reset */
 #define ILI9341_READ_DISPLAY_ID     0x04U   /* Read display identification information */

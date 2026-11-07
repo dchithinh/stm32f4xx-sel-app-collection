@@ -1,7 +1,7 @@
 /**
- * Init rxi/log.c on embedded: disables default stderr path (no time/strftime),
- * registers a callback that prints over the retargeted UART (putchar -> _write).
- */
+    * Init rxi/log.c on embedded: disables default stderr path (no time/strftime),
+    * registers a callback that prints over the retargeted UART (putchar -> _write).
+    */
 #ifndef LOGGER_UART_H
 #define LOGGER_UART_H
 

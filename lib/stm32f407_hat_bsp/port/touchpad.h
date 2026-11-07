@@ -1,32 +1,32 @@
 /**
- * @file indev.h
- * 
- */
+    * @file indev.h
+    * 
+    */
 
 #ifndef INDEV_H
 #define INDEV_H
 
 /*********************
- *      INCLUDES
- *********************/
+    *      INCLUDES
+    *********************/
 #include <stdbool.h>
 #include <stdint.h>
 
 /*********************
- *      DEFINES
- *********************/
+    *      DEFINES
+    *********************/
 
 /**********************
- *      TYPEDEFS
- **********************/
+    *      TYPEDEFS
+    **********************/
 
 /**********************
- * GLOBAL PROTOTYPES
- **********************/
+    * GLOBAL PROTOTYPES
+    **********************/
 void touchpad_init(void);
 
 /**********************
- *      MACROS
- **********************/
+    *      MACROS
+    **********************/
 
 #endif

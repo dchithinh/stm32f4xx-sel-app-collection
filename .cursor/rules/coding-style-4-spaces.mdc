@@ -1,0 +1,10 @@
+---
+description: 4-space indentation for this STM32 collection
+alwaysApply: true
+---
+
+# 4-space coding style
+
+- Indentation: **4 spaces**, never tabs (`insertSpaces`, `tabSize` 4).
+- Applies to **our** code under `lib/` (cli, logger wrapper, BSP, sdcard), `stm32f407_*` app `Core/` and `src/`, not huge vendored trees (`lvgl/`, `lib/fatfs/ff.c`, `lib/helix/`). `lib/mbzm/` is in-tree; format our edits (`mbzm_uart_io.c`, `zmodem_fatfs.c`) like the rest of `lib/`.
+- New files and edits must use 4 spaces consistently.

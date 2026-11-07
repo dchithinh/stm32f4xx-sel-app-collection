@@ -1,7 +1,7 @@
 /**
- * Weak stubs for sd_spi when an app does not use the microSD driver (SPI3 owned in touch).
- * When BSP_HAS_SD_SPI_BUS=1, the real sd_spi.c in the app overrides these.
- */
+    * Weak stubs for sd_spi when an app does not use the microSD driver (SPI3 owned in touch).
+    * When BSP_HAS_SD_SPI_BUS=1, the real sd_spi.c in the app overrides these.
+    */
 #include <stdint.h>
 
 #if !defined(BSP_HAS_SD_SPI_BUS) || BSP_HAS_SD_SPI_BUS == 0

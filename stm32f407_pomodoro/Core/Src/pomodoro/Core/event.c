@@ -2,11 +2,11 @@
 #include "pomodoro.h"
 
 /**
- * @file event.c
- * @brief Event dispatcher implementation.
- *
- * This file translates UI events into Pomodoro core API calls.
- */
+    * @file event.c
+    * @brief Event dispatcher implementation.
+    *
+    * This file translates UI events into Pomodoro core API calls.
+    */
 
 // ================== Public API ==================
 
@@ -17,9 +17,9 @@
 
 void event_init(void) {
     pomodoro_init(pomodoro_get_work_time() / (60 * 1000),
-                  pomodoro_get_short_break() /  (60 * 1000),
-                  pomodoro_get_long_break() /  (60 * 1000),
-                  pomodoro_get_cycle_count());
+                    pomodoro_get_short_break() /  (60 * 1000),
+                    pomodoro_get_long_break() /  (60 * 1000),
+                    pomodoro_get_cycle_count());
 }
 
 void event_dispatch(EventType_e type, void *data) {
@@ -44,9 +44,9 @@ void event_dispatch(EventType_e type, void *data) {
         PomodoroSettings_t *s = (PomodoroSettings_t *)data;
         if (s) {
             pomodoro_init(s->work_min,
-                          s->short_break_min,
-                          s->long_break_min,
-                          s->cycles_before_long);
+                            s->short_break_min,
+                            s->long_break_min,
+                            s->cycles_before_long);
         }
         break;
     }

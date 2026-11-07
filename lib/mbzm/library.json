@@ -1,0 +1,30 @@
+{
+  "name": "mbzm",
+  "version": "0.1.0",
+  "description": "roscopeco/mbzm ZMODEM stack + FatFs receive",
+  "build": {
+    "includeDir": "include",
+    "srcDir": ".",
+    "srcFilter": [
+      "+<zserial.c>",
+      "+<zheaders.c>",
+      "+<znumbers.c>",
+      "+<crc16.c>",
+      "+<crc32.c>",
+      "+<mbzm_uart_io.c>",
+      "+<zmodem_fatfs.c>",
+      "-<rz.c>",
+      "-<tests.c>",
+      "-<cpptest.cpp>"
+    ],
+    "flags": [
+      "-D ZEMBEDDED"
+    ]
+  },
+  "dependencies": [
+    { "name": "stm32f407_hat_bsp" },
+    { "name": "fatfs" }
+  ],
+  "frameworks": "stm32cube",
+  "platforms": "ststm32"
+}

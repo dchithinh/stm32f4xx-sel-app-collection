@@ -8,10 +8,10 @@
 #define PLAYER_PATH_MAX    96
 
 typedef enum {
-    PLAYER_STOPPED = 0,
-    PLAYER_PLAYING,
-    PLAYER_PAUSED,
-    PLAYER_ERROR
+        PLAYER_STOPPED = 0,
+        PLAYER_PLAYING,
+        PLAYER_PAUSED,
+        PLAYER_ERROR
 } player_state_t;
 
 int player_init(void);
@@ -26,6 +26,10 @@ void player_play_index(uint8_t index);
 void player_set_volume(uint8_t percent);
 void player_touch_while_i2s(void);
 bool player_spi_busy(void);
+bool player_sd_mounted(void);
+
+/** Rescan MP3 paths on SD (music/ then root). Call after mkdir/upload. */
+void player_rescan_tracks(void);
 
 player_state_t player_get_state(void);
 uint8_t player_get_volume(void);

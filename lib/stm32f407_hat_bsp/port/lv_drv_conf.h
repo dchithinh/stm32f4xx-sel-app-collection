@@ -1,11 +1,11 @@
 /**
- * @file lv_drv_conf.h
- * Configuration file for v9.0.0-dev
- */
+    * @file lv_drv_conf.h
+    * Configuration file for v9.0.0-dev
+    */
 
 /*
- * COPY THIS FILE AS lv_drv_conf.h
- */
+    * COPY THIS FILE AS lv_drv_conf.h
+    */
 
 /* clang-format off */
 #if 1 /*Set it to "1" to enable the content*/
@@ -16,33 +16,33 @@
 #include "lv_conf.h"
 
 /*********************
- * DELAY INTERFACE
- *********************/
+    * DELAY INTERFACE
+    *********************/
 #define LV_DRV_DELAY_INCLUDE  <stdint.h>            /*Dummy include by default*/
 #define LV_DRV_DELAY_US(us)  /*delay_us(us)*/       /*Delay the given number of microseconds*/
 #define LV_DRV_DELAY_MS(ms)  /*delay_ms(ms)*/       /*Delay the given number of milliseconds*/
 
 /*********************
- * DISPLAY INTERFACE
- *********************/
+    * DISPLAY INTERFACE
+    *********************/
 
 /*------------
- *  Common
- *------------*/
+    *  Common
+    *------------*/
 #define LV_DRV_DISP_INCLUDE         <stdint.h>           /*Dummy include by default*/
 #define LV_DRV_DISP_CMD_DATA(val)  /*pin_x_set(val)*/    /*Set the command/data pin to 'val'*/
 #define LV_DRV_DISP_RST(val)       /*pin_x_set(val)*/    /*Set the reset pin to 'val'*/
 
 /*---------
- *  SPI
- *---------*/
+    *  SPI
+    *---------*/
 #define LV_DRV_DISP_SPI_CS(val)          /*spi_cs_set(val)*/     /*Set the SPI's Chip select to 'val'*/
 #define LV_DRV_DISP_SPI_WR_BYTE(data)    /*spi_wr(data)*/        /*Write a byte the SPI bus*/
 #define LV_DRV_DISP_SPI_WR_ARRAY(adr, n) /*spi_wr_mem(adr, n)*/  /*Write 'n' bytes to SPI bus from 'adr'*/
 
 /*------------------
- *  Parallel port
- *-----------------*/
+    *  Parallel port
+    *-----------------*/
 #define LV_DRV_DISP_PAR_CS(val)          /*par_cs_set(val)*/   /*Set the Parallel port's Chip select to 'val'*/
 #define LV_DRV_DISP_PAR_SLOW             /*par_slow()*/        /*Set low speed on the parallel port*/
 #define LV_DRV_DISP_PAR_FAST             /*par_fast()*/        /*Set high speed on the parallel port*/
@@ -50,25 +50,25 @@
 #define LV_DRV_DISP_PAR_WR_ARRAY(adr, n) /*par_wr_mem(adr,n)*/ /*Write 'n' bytes to Parallel ports from 'adr'*/
 
 /***************************
- * INPUT DEVICE INTERFACE
- ***************************/
+    * INPUT DEVICE INTERFACE
+    ***************************/
 
 /*----------
- *  Common
- *----------*/
+    *  Common
+    *----------*/
 #define LV_DRV_INDEV_INCLUDE     <stdint.h>             /*Dummy include by default*/
 #define LV_DRV_INDEV_RST(val)    /*pin_x_set(val)*/     /*Set the reset pin to 'val'*/
 #define LV_DRV_INDEV_IRQ_READ    xpt2046_irq_pin_read() /*pn_x_read()*/      /*Read the IRQ pin*/
 
 /*---------
- *  SPI
- *---------*/
+    *  SPI
+    *---------*/
 #define LV_DRV_INDEV_SPI_CS(val)            xpt2046_cs(val)/*spi_cs_set(val)*/     /*Set the SPI's Chip select to 'val'*/
 #define LV_DRV_INDEV_SPI_XCHG_BYTE(data)    xpt2046_xchg_value(data) /*spi_xchg(val)*/     /*Write 'val' to SPI and give the read value*/
 
 /*---------
- *  I2C
- *---------*/
+    *  I2C
+    *---------*/
 #define LV_DRV_INDEV_I2C_START              /*i2c_start()*/       /*Make an I2C start*/
 #define LV_DRV_INDEV_I2C_STOP               /*i2c_stop()*/        /*Make an I2C stop*/
 #define LV_DRV_INDEV_I2C_RESTART            /*i2c_restart()*/     /*Make an I2C restart*/
@@ -77,12 +77,12 @@
 
 
 /*********************
- *  DISPLAY DRIVERS
- *********************/
+    *  DISPLAY DRIVERS
+    *********************/
 
 /*-------------------
- *  SDL
- *-------------------*/
+    *  SDL
+    *-------------------*/
 
 /* SDL based drivers for display, mouse, mousewheel and keyboard*/
 #ifndef USE_SDL
@@ -102,7 +102,7 @@
 #  define SDL_ZOOM        1
 
 /* Used to test true double buffering with only address changing.
- * Use 2 draw buffers, bith with SDL_HOR_RES x SDL_VER_RES size*/
+    * Use 2 draw buffers, bith with SDL_HOR_RES x SDL_VER_RES size*/
 #  define SDL_DOUBLE_BUFFERED 0
 
 /*Eclipse: <SDL2/SDL.h>    Visual Studio: <SDL.h>*/
@@ -113,8 +113,8 @@
 #endif
 
 /*-------------------
- *  Monitor of PC
- *-------------------*/
+    *  Monitor of PC
+    *-------------------*/
 
 /*DEPRECATED: Use the SDL driver instead. */
 #ifndef USE_MONITOR
@@ -129,7 +129,7 @@
 #  define MONITOR_ZOOM        1
 
 /* Used to test true double buffering with only address changing.
- * Use 2 draw buffers, bith with MONITOR_HOR_RES x MONITOR_VER_RES size*/
+    * Use 2 draw buffers, bith with MONITOR_HOR_RES x MONITOR_VER_RES size*/
 #  define MONITOR_DOUBLE_BUFFERED 0
 
 /*Eclipse: <SDL2/SDL.h>    Visual Studio: <SDL.h>*/
@@ -140,8 +140,8 @@
 #endif
 
 /*-----------------------------------
- *  Native Windows (including mouse)
- *----------------------------------*/
+    *  Native Windows (including mouse)
+    *----------------------------------*/
 #ifndef USE_WINDOWS
 #  define USE_WINDOWS       0
 #endif
@@ -152,8 +152,8 @@
 #endif
 
 /*----------------------------
- *  Native Windows (win32drv)
- *---------------------------*/
+    *  Native Windows (win32drv)
+    *---------------------------*/
 #ifndef USE_WIN32DRV
 #  define USE_WIN32DRV       0
 #endif
@@ -164,15 +164,15 @@
 #endif
 
 /*----------------------------------------
- *  GTK drivers (monitor, mouse, keyboard
- *---------------------------------------*/
+    *  GTK drivers (monitor, mouse, keyboard
+    *---------------------------------------*/
 #ifndef USE_GTK
 #  define USE_GTK       0
 #endif
 
 /*----------------------------------------
- *  Wayland drivers (monitor, mouse, keyboard, touchscreen)
- *---------------------------------------*/
+    *  Wayland drivers (monitor, mouse, keyboard, touchscreen)
+    *---------------------------------------*/
 #ifndef USE_WAYLAND
 #  define USE_WAYLAND       0
 #endif
@@ -193,8 +193,8 @@
 #endif
 
 /*----------------
- *    SSD1963
- *--------------*/
+    *    SSD1963
+    *--------------*/
 #ifndef USE_SSD1963
 #  define USE_SSD1963         0
 #endif
@@ -217,8 +217,8 @@
 #endif
 
 /*----------------
- *    R61581
- *--------------*/
+    *    R61581
+    *--------------*/
 #ifndef USE_R61581
 #  define USE_R61581          0
 #endif
@@ -241,8 +241,8 @@
 #endif
 
 /*------------------------------
- *  ST7565 (Monochrome, low res.)
- *-----------------------------*/
+    *  ST7565 (Monochrome, low res.)
+    *-----------------------------*/
 #ifndef USE_ST7565
 #  define USE_ST7565          0
 #endif
@@ -252,8 +252,8 @@
 #endif  /*USE_ST7565*/
 
 /*------------------------------
- *  GC9A01 (color, low res.)
- *-----------------------------*/
+    *  GC9A01 (color, low res.)
+    *-----------------------------*/
 #ifndef USE_GC9A01
 #  define USE_GC9A01          0
 #endif
@@ -263,9 +263,9 @@
 #endif  /*USE_GC9A01*/
 
 /*------------------------------------------
- *  UC1610 (4 gray 160*[104|128])
- *  (EA DOGXL160 160x104 tested)
- *-----------------------------------------*/
+    *  UC1610 (4 gray 160*[104|128])
+    *  (EA DOGXL160 160x104 tested)
+    *-----------------------------------------*/
 #ifndef USE_UC1610
 #  define USE_UC1610          0
 #endif
@@ -279,14 +279,14 @@
 #endif  /*USE_UC1610*/
 
 /*-------------------------------------------------
- *  SHARP memory in pixel monochrome display series
- *      LS012B7DD01 (184x38  pixels.)
- *      LS013B7DH03 (128x128 pixels.)
- *      LS013B7DH05 (144x168 pixels.)
- *      LS027B7DH01 (400x240 pixels.) (tested)
- *      LS032B7DD02 (336x536 pixels.)
- *      LS044Q7DH01 (320x240 pixels.)
- *------------------------------------------------*/
+    *  SHARP memory in pixel monochrome display series
+    *      LS012B7DD01 (184x38  pixels.)
+    *      LS013B7DH03 (128x128 pixels.)
+    *      LS013B7DH05 (144x168 pixels.)
+    *      LS027B7DH01 (400x240 pixels.) (tested)
+    *      LS032B7DD02 (336x536 pixels.)
+    *      LS044Q7DH01 (320x240 pixels.)
+    *------------------------------------------------*/
 #ifndef USE_SHARP_MIP
 #  define USE_SHARP_MIP       0
 #endif
@@ -299,8 +299,8 @@
 #endif  /*USE_SHARP_MIP*/
 
 /*-------------------------------------------------
- *  ILI9341 240X320 TFT LCD
- *------------------------------------------------*/
+    *  ILI9341 240X320 TFT LCD
+    *------------------------------------------------*/
 #ifndef USE_ILI9341
 #  define USE_ILI9341       0
 #endif
@@ -313,8 +313,8 @@
 #endif  /*USE_ILI9341*/
 
 /*-----------------------------------------
- *  Linux frame buffer device (/dev/fbx)
- *-----------------------------------------*/
+    *  Linux frame buffer device (/dev/fbx)
+    *-----------------------------------------*/
 #ifndef USE_FBDEV
 #  define USE_FBDEV           0
 #endif
@@ -324,8 +324,8 @@
 #endif
 
 /*-----------------------------------------
- *  FreeBSD frame buffer device (/dev/fbx)
- *.........................................*/
+    *  FreeBSD frame buffer device (/dev/fbx)
+    *.........................................*/
 #ifndef USE_BSD_FBDEV
 #  define USE_BSD_FBDEV		0
 #endif
@@ -335,8 +335,8 @@
 #endif
 
 /*-----------------------------------------
- *  DRM/KMS device (/dev/dri/cardX)
- *-----------------------------------------*/
+    *  DRM/KMS device (/dev/dri/cardX)
+    *-----------------------------------------*/
 #ifndef USE_DRM
 #  define USE_DRM           0
 #endif
@@ -347,12 +347,12 @@
 #endif
 
 /*********************
- *  INPUT DEVICES
- *********************/
+    *  INPUT DEVICES
+    *********************/
 
 /*--------------
- *    XPT2046
- *--------------*/
+    *    XPT2046
+    *--------------*/
 #ifndef USE_XPT2046
 #  define USE_XPT2046         1
 #endif
@@ -371,8 +371,8 @@
 #endif
 
 /*-----------------
- *    FT5406EE8
- *-----------------*/
+    *    FT5406EE8
+    *-----------------*/
 #ifndef USE_FT5406EE8
 #  define USE_FT5406EE8       0
 #endif
@@ -382,8 +382,8 @@
 #endif
 
 /*---------------
- *  AD TOUCH
- *--------------*/
+    *  AD TOUCH
+    *--------------*/
 #ifndef USE_AD_TOUCH
 #  define USE_AD_TOUCH        0
 #endif
@@ -394,8 +394,8 @@
 
 
 /*---------------------------------------
- * Mouse or touchpad on PC (using SDL)
- *-------------------------------------*/
+    * Mouse or touchpad on PC (using SDL)
+    *-------------------------------------*/
 /*DEPRECATED: Use the SDL driver instead. */
 #ifndef USE_MOUSE
 #  define USE_MOUSE           0
@@ -406,8 +406,8 @@
 #endif
 
 /*-------------------------------------------
- * Mousewheel as encoder on PC (using SDL)
- *------------------------------------------*/
+    * Mousewheel as encoder on PC (using SDL)
+    *------------------------------------------*/
 /*DEPRECATED: Use the SDL driver instead. */
 #ifndef USE_MOUSEWHEEL
 #  define USE_MOUSEWHEEL      0
@@ -418,8 +418,8 @@
 #endif
 
 /*-------------------------------------------------
- * Touchscreen, mouse/touchpad or keyboard as libinput interface (for Linux based systems)
- *------------------------------------------------*/
+    * Touchscreen, mouse/touchpad or keyboard as libinput interface (for Linux based systems)
+    *------------------------------------------------*/
 #ifndef USE_LIBINPUT
 #  define USE_LIBINPUT           0
 #endif
@@ -430,14 +430,14 @@
 
 #if USE_LIBINPUT || USE_BSD_LIBINPUT
 /*If only a single device of the same type is connected, you can also auto detect it, e.g.:
- *#define LIBINPUT_NAME   libinput_find_dev(LIBINPUT_CAPABILITY_TOUCH, false)*/
+    *#define LIBINPUT_NAME   libinput_find_dev(LIBINPUT_CAPABILITY_TOUCH, false)*/
 #  define LIBINPUT_NAME   "/dev/input/event0"        /*You can use the "evtest" Linux tool to get the list of devices and test them*/
 
 #endif  /*USE_LIBINPUT || USE_BSD_LIBINPUT*/
 
 /*-------------------------------------------------
- * Mouse or touchpad as evdev interface (for Linux based systems)
- *------------------------------------------------*/
+    * Mouse or touchpad as evdev interface (for Linux based systems)
+    *------------------------------------------------*/
 #ifndef USE_EVDEV
 #  define USE_EVDEV           0
 #endif
@@ -461,8 +461,8 @@
 #endif  /*USE_EVDEV*/
 
 /*-------------------------------------------------
- * Full keyboard support for evdev and libinput interface
- *------------------------------------------------*/
+    * Full keyboard support for evdev and libinput interface
+    *------------------------------------------------*/
 #  ifndef USE_XKB
 #    define USE_XKB           0
 #  endif
@@ -478,8 +478,8 @@
 #endif  /*USE_LIBINPUT || USE_BSD_LIBINPUT || USE_EVDEV || USE_BSD_EVDEV*/
 
 /*-------------------------------
- *   Keyboard of a PC (using SDL)
- *------------------------------*/
+    *   Keyboard of a PC (using SDL)
+    *------------------------------*/
 /*DEPRECATED: Use the SDL driver instead. */
 #ifndef USE_KEYBOARD
 #  define USE_KEYBOARD        0

@@ -290,6 +290,6 @@ int settings_get_long_break()
 
 int settings_get_cycle_count()
 {
-   //TODO: Make this configurable in the future
-   return 4; // Default cycle count
+    //TODO: Make this configurable in the future
+    return 4; // Default cycle count
 }

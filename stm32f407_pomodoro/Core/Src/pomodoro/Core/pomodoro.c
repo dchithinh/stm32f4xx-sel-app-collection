@@ -6,8 +6,8 @@
 // ====================== Data Structures ======================
 
 /**
- * @brief Pomodoro session configuration
- */
+    * @brief Pomodoro session configuration
+    */
 typedef struct {
     uint32_t    work_duration_ms;          /**< Work session duration in milliseconds */
     uint32_t    short_break_duration_ms;   /**< Short break duration in milliseconds */
@@ -16,8 +16,8 @@ typedef struct {
 } PomodoroConfig_t;
 
 /**
- * @brief Pomodoro session state
- */
+    * @brief Pomodoro session state
+    */
 typedef struct {
     PomodoroState_e current_state;      /**< Current session state */
     PomodoroState_e previous_state;     /**< Previous session state */
@@ -26,16 +26,16 @@ typedef struct {
 } PomodoroSession_t;
 
 /**
- * @brief Pomodoro callback functions
- */
+    * @brief Pomodoro callback functions
+    */
 typedef struct {
     pomodoro_state_cb_t state_callback; /**< State change callback */
     pomodoro_tick_cb_t  tick_callback;  /**< Timer tick callback */
 } PomodoroCallbacks_t;
 
 /**
- * @brief Main Pomodoro context
- */
+    * @brief Main Pomodoro context
+    */
 typedef struct {
     PomodoroConfig_t config;            /**< Session configuration */
     PomodoroSession_t session;          /**< Current session state */
@@ -65,10 +65,10 @@ static PomodoroContext_t pomo_ctx = {
 static const char *pomoState2Str(PomodoroState_e state);
 // ====================== Private Functions ======================
 /**
- * @brief Change state internally and trigger callback
- * @param new_state New Pomodoro state
- * @param duration_ms Duration for the new state
- */
+    * @brief Change state internally and trigger callback
+    * @param new_state New Pomodoro state
+    * @param duration_ms Duration for the new state
+    */
 static void change_state(PomodoroState_e new_state, uint32_t duration_ms) {
     pomo_ctx.session.previous_state = pomo_ctx.session.current_state;
     pomo_ctx.session.current_state = new_state;
@@ -107,7 +107,7 @@ static void on_timer_finished(void) {
 }
 
 void pomodoro_init(uint32_t work_min, uint32_t short_break_min,
-                   uint32_t long_break_min, uint8_t cycles_before_long) {
+                    uint32_t long_break_min, uint8_t cycles_before_long) {
     pomo_ctx.config.work_duration_ms = work_min * 60 * 1000;
     pomo_ctx.config.short_break_duration_ms = short_break_min * 60 * 1000;
     pomo_ctx.config.long_break_duration_ms = long_break_min * 60 * 1000;
@@ -196,14 +196,14 @@ bool pomodoro_is_resume_transition(void)
     // or previous_state was PAUSED_BREAK and current_state is SHORT_BREAK or LONG_BREAK
     return ((pomo_ctx.session.previous_state == POMODORO_PAUSED_WORK && pomo_ctx.session.current_state == POMODORO_WORK) ||
             (pomo_ctx.session.previous_state == POMODORO_PAUSED_BREAK && 
-               (pomo_ctx.session.current_state == POMODORO_SHORT_BREAK || pomo_ctx.session.current_state == POMODORO_LONG_BREAK)));
+                (pomo_ctx.session.current_state == POMODORO_SHORT_BREAK || pomo_ctx.session.current_state == POMODORO_LONG_BREAK)));
 }
 
 bool pomodoro_is_pause_transition(void)
 {
     return (
         (pomo_ctx.session.current_state == POMODORO_PAUSED_WORK ||
-         pomo_ctx.session.current_state == POMODORO_PAUSED_BREAK)
+            pomo_ctx.session.current_state == POMODORO_PAUSED_BREAK)
     );
 }
 
@@ -223,7 +223,7 @@ int8_t pomodoro_get_pause_break_type(void)
 }
 
 void pomodoro_update_durations(uint32_t work_min, uint32_t short_break_min,
-                               uint32_t long_break_min, uint8_t cycles_before_long)
+                                uint32_t long_break_min, uint8_t cycles_before_long)
 {
     pomo_ctx.config.work_duration_ms = work_min * 60 * 1000;
     pomo_ctx.config.short_break_duration_ms = short_break_min * 60 * 1000;
@@ -253,7 +253,7 @@ int pomodoro_get_long_break(void)
 
 int pomodoro_get_cycle_count(void)
 {
-   return pomo_ctx.config.max_cycles;
+    return pomo_ctx.config.max_cycles;
 }
 
 uint8_t pomodoro_get_work_progress_in_percent(void)

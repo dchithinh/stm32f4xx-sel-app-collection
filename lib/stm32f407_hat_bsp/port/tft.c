@@ -1,11 +1,11 @@
 /**
- * @file disp.c
- *
- */
+    * @file disp.c
+    *
+    */
 
 /*********************
- *      INCLUDES
- *********************/
+    *      INCLUDES
+    *********************/
 #include "lv_conf.h"
 #if defined(LV_LVGL_H_INCLUDE_SIMPLE) && LV_LVGL_H_INCLUDE_SIMPLE
 #include "lvgl.h"
@@ -23,17 +23,17 @@
 extern lcd_handle_t lcd_handle;
 
 /*********************
- *      DEFINES
- *********************/
+    *      DEFINES
+    *********************/
 
 
 /**********************
- *      TYPEDEFS
- **********************/
+    *      TYPEDEFS
+    **********************/
 
 /**********************
- *  STATIC PROTOTYPES
- **********************/
+    *  STATIC PROTOTYPES
+    **********************/
 
 /*These 3 functions are needed by LittlevGL*/
 static void tft_flush(lv_display_t * drv, const lv_area_t * area, uint8_t * color_p);
@@ -42,20 +42,20 @@ static void tft_flush(lv_display_t * drv, const lv_area_t * area, uint8_t * colo
 
 
 /**********************
- *  STATIC VARIABLES
- **********************/
+    *  STATIC VARIABLES
+    **********************/
 
 
 static lv_display_t *display;
 static volatile lv_display_t *disp_drv_pending = NULL;  // Track pending DMA flush
 
 /**********************
- *      MACROS
- **********************/
+    *      MACROS
+    **********************/
 
 /**********************
- *   GLOBAL FUNCTIONS
- **********************/
+    *   GLOBAL FUNCTIONS
+    **********************/
 
 static volatile uint32_t t_saved = 0;
 void monitor_cb(lv_event_t *e)
@@ -109,17 +109,17 @@ void tft_init(void)
 
 
 /**********************
- *   STATIC FUNCTIONS
- **********************/
+    *   STATIC FUNCTIONS
+    **********************/
 
 /**
- * Flush a color buffer
- * @param x1 left coordinate of the rectangle
- * @param x2 right coordinate of the rectangle
- * @param y1 top coordinate of the rectangle
- * @param y2 bottom coordinate of the rectangle
- * @param color_p pointer to an array of colors
- */
+    * Flush a color buffer
+    * @param x1 left coordinate of the rectangle
+    * @param x2 right coordinate of the rectangle
+    * @param y1 top coordinate of the rectangle
+    * @param y2 bottom coordinate of the rectangle
+    * @param color_p pointer to an array of colors
+    */
 static void tft_flush(lv_display_t * disp, const lv_area_t * area, uint8_t * color_p)
 {
     if(area->x2 < 0 || area->y2 < 0 || area->x1 > (TFT_HOR_RES - 1) || area->y1 > (TFT_VER_RES - 1)) {
@@ -155,9 +155,9 @@ static void tft_flush(lv_display_t * disp, const lv_area_t * area, uint8_t * col
 
 #if USE_DMA_FLUSH_LCD
 /**
- * Called from HAL_SPI_TxCpltCallback when DMA transfer completes
- * This function should be called from lcd.c DMA completion callback
- */
+    * Called from HAL_SPI_TxCpltCallback when DMA transfer completes
+    * This function should be called from lcd.c DMA completion callback
+    */
 void tft_dma_transfer_complete(void)
 {
     if (disp_drv_pending != NULL) {

@@ -41,7 +41,8 @@ Format **FAT32**. Place:
 
 - **Shared HAT BSP** (LCD, touch, LVGL port): `../lib/stm32f407_hat_bsp`
 - **Shared logging** ([rxi/log.c](https://github.com/rxi/log.c)): `../lib/logger`
-- **microSD on SPI3** (product-specific): `lib/sdcard`
+- **CLI + SD shell**: `../lib/cli` (with `../lib/sdcard`, `../lib/fatfs`)
+- **microSD on SPI3**: `../lib/sdcard` + `../lib/fatfs`
 
 When this app is its **own git repo**, add the common BSP as a **submodule** at `../lib/stm32f407_hat_bsp` (or change `lib_extra_dirs` / `-I` paths in `platformio.ini`).
 
@@ -50,6 +51,45 @@ When this app is its **own git repo**, add the common BSP as a **submodule** at 
 Console output uses **`[rxi/log.c](https://github.com/rxi/log.c)`** from **`../lib/logger`** (see collection README). After **`debug_uart_init()`**, the app calls **`logger_init_uart()`** so messages go to **USART2** (PA2 TX) at **115200 8N1** (ST-Link VCP), with levels such as **`log_info`** / **`log_debug`** / **`log_warn`**. `src/syscalls.c` still retargets `putchar` for anything that uses stdio.
 
 Use **PlatformIO Monitor** (`pio device monitor`) or any terminal on the ST-Link port. Default log level is **INFO**; override with e.g. `-D LOGGER_DEFAULT_LEVEL=LOG_DEBUG` in `build_flags`.
+
+## Interactive CLI
+
+After boot you get a prompt (`mp> `) on the same serial port. All paths are on the **microSD** (FatFs), relative to the current directory unless you use a leading `/`.
+
+Built-ins: **`help`**, **`echo`**, **`uptime`**.
+
+| Command | Description |
+|---------|-------------|
+| `ls [path]` | List directory (default `.`) |
+| `pwd` | Current working directory on SD |
+| `cd [path]` | Change directory (default `/` = card root) |
+| `mkdir <path>` | Create folder |
+| `rm <path>` | Delete file or **empty** directory |
+| `mv <from> <to>` | Rename / move |
+| `df` | Free space |
+| `cat <file>` | Dump text file (up to 4 KiB) |
+| `rescan` | Refresh MP3 playlist after upload |
+| `rz [dir]` | ZMODEM receive into folder (default `music`) |
+| `stop` | Stop playback |
+
+Example session:
+
+```
+mp> cd /
+mp> ls
+mp> mkdir music
+mp> cd music
+mp> rz
+```
+
+**ZMODEM upload from PC** (example):
+
+1. Open serial @ **115200 8N1** (PlatformIO monitor or PuTTY/Tera Term).
+2. Type `rz music` on the device.
+3. On Linux: `sz -Y yourfile.mp3 </dev/ttyACM0 >/dev/ttyACM0` (use your ST-Link COM port).
+4. On Windows: **Tera Term** — *File → Transfer → ZMODEM → Send* after `rz`.
+
+Protocol + FatFs sink: `../lib/mbzm` (`zmodem_fatfs.c`). CLI command: `../lib/cli` (`cli_zmodem.c`).
 
 ## Build
 

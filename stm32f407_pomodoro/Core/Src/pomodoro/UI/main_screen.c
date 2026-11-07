@@ -220,8 +220,8 @@ void ui_main_screen(lv_obj_t *parent)
     label_mode = lv_label_create(main_cont);
     lv_label_set_text(label_mode, "Focus");
     lv_obj_set_grid_cell(label_mode,
-                         LV_GRID_ALIGN_CENTER, 0, 1,
-                         LV_GRID_ALIGN_CENTER, 0, 1);
+                            LV_GRID_ALIGN_CENTER, 0, 1,
+                            LV_GRID_ALIGN_CENTER, 0, 1);
     lv_obj_add_style(label_mode, &font_style, 0);
     lv_obj_set_style_text_font(label_mode, &lv_font_montserrat_36, 0);
     lv_obj_set_style_text_color(label_mode, lv_color_hex(0x00ff88), 0);
@@ -366,12 +366,12 @@ void ui_main_screen(lv_obj_t *parent)
     lv_obj_clear_flag(btn_row, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_flex_flow(btn_row, LV_FLEX_FLOW_ROW);
     lv_obj_set_flex_align(btn_row,
-                          LV_FLEX_ALIGN_SPACE_EVENLY,
-                          LV_FLEX_ALIGN_CENTER,
-                          LV_FLEX_ALIGN_CENTER);
+                            LV_FLEX_ALIGN_SPACE_EVENLY,
+                            LV_FLEX_ALIGN_CENTER,
+                            LV_FLEX_ALIGN_CENTER);
     lv_obj_set_grid_cell(btn_row,
-                         LV_GRID_ALIGN_STRETCH, 0, 1,
-                         LV_GRID_ALIGN_STRETCH, 2, 1);
+                            LV_GRID_ALIGN_STRETCH, 0, 1,
+                            LV_GRID_ALIGN_STRETCH, 2, 1);
 
     btn_start = lv_btn_create(btn_row);
     int16_t btn_w = 15;
@@ -411,8 +411,8 @@ void ui_main_screen(lv_obj_t *parent)
     label_cycle = lv_label_create(main_cont);
     lv_label_set_text(label_cycle, "Cycle: 0 / 4");
     lv_obj_set_grid_cell(label_cycle,
-                         LV_GRID_ALIGN_CENTER, 0, 1,
-                         LV_GRID_ALIGN_CENTER, 3, 1);
+                            LV_GRID_ALIGN_CENTER, 0, 1,
+                            LV_GRID_ALIGN_CENTER, 3, 1);
     
     lv_obj_t *label_quote = lv_label_create(main_cont);
     lv_label_set_text(label_quote, "Focus on being productive instead of busy");
@@ -483,7 +483,7 @@ static void ui_update_ctrl_button(PomodoroState_e state)
 #if 0
 static void ui_update_state_text(PomodoroState_e state)
 {
-   switch (state) {
+    switch (state) {
         case POMODORO_IDLE:
             lv_label_set_text(label_mode, "Ready");
             lv_label_set_text(lv_obj_get_child(btn_start, 0), "Start");
@@ -525,8 +525,8 @@ static void ui_update_cycle_counter(void)
 {
     char buf[32];
     snprintf(buf, sizeof(buf), "Cycle: %d / %d", 
-             pomodoro_get_current_cycle(),
-             pomodoro_get_max_cycles());
+                pomodoro_get_current_cycle(),
+                pomodoro_get_max_cycles());
     lv_label_set_text(label_cycle, buf);
     lv_obj_set_style_text_color(label_cycle, lv_color_hex(0x00FFFF), 0);
 }

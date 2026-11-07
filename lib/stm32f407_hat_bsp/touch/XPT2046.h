@@ -1,7 +1,7 @@
 /**
- * @file XPT2046.h
- *
- */
+    * @file XPT2046.h
+    *
+    */
 
 #ifndef XPT2046_H
 #define XPT2046_H
@@ -13,8 +13,8 @@ extern "C" {
 #endif
 
 /*********************
- *      INCLUDES
- *********************/
+    *      INCLUDES
+    *********************/
 #ifndef LV_DRV_NO_CONF
 #ifdef LV_CONF_INCLUDE_SIMPLE
 #include "lv_drv_conf.h"
@@ -32,16 +32,16 @@ extern "C" {
 #endif
 
 /*********************
- *      DEFINES
- *********************/
+    *      DEFINES
+    *********************/
 
 /**********************
- *      TYPEDEFS
- **********************/
+    *      TYPEDEFS
+    **********************/
 
 /**********************
- * GLOBAL PROTOTYPES
- **********************/
+    * GLOBAL PROTOTYPES
+    **********************/
 void xpt2046_init(void);
 void xpt2046_read(lv_indev_t * indev, lv_indev_data_t * data);
 void xpt2046_cs(uint8_t val);
@@ -49,8 +49,8 @@ uint8_t xpt2046_xchg_value(uint8_t val);
 uint8_t xpt2046_irq_pin_read(void);
 
 /**********************
- *      MACROS
- **********************/
+    *      MACROS
+    **********************/
 
 #endif /* USE_XPT2046 */
 
